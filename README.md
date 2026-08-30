@@ -1,12 +1,11 @@
 # workshops.ujjwalagarwal.com
 
-Workshop units taught by Ujjwal Agarwal (Assistant Professor, Srishti Manipal
-Institute of Art, Design and Technology). Static site, GitHub Pages.
+Workshops taught by Ujjwal Agarwal. Static site, GitHub Pages.
 
 ## Structure
 
 ```
-/                                   → index of all workshop units
+/                                   → index of all workshops
 /computational-approach-to-sound/   → CAS 2026 (31 Aug – 11 Sep 2026)
   day-1/ … day-10/                  → full teaching material, one page per day
   starters/                         → phone-instrument templates (Week 2)
