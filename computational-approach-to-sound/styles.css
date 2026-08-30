@@ -1,0 +1,189 @@
+/* Computational Approaches to Sound — CAS 2026
+   workshops.ujjwalagarwal.com/computational-approach-to-sound */
+
+:root{
+  --paper:#faf9f6;
+  --ink:#1a1712;
+  --dim:#6f6a5e;
+  --hair:#e5e1d8;
+  --acc:#c2410c;          /* signal orange */
+  --acc-soft:#fdf0e7;
+  --code-bg:#16140f;
+  --code-ink:#e8e3d6;
+  --code-dim:#8a8272;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --serif:Charter,"Bitstream Charter",Cambria,Georgia,serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--serif);font-size:17px;line-height:1.65;
+}
+main{max-width:720px;margin:0 auto;padding:0 22px 96px}
+
+/* ---------- top nav ---------- */
+nav.top{
+  max-width:720px;margin:0 auto;padding:18px 22px;
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;
+  border-bottom:1px solid var(--hair);
+}
+nav.top a{color:var(--dim);text-decoration:none}
+nav.top a:hover{color:var(--acc)}
+nav.top .unit{color:var(--ink);font-weight:600}
+
+/* ---------- headers ---------- */
+.kicker{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--acc);margin:56px 0 10px;
+}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.12;font-weight:700;
+   letter-spacing:-.015em;margin-bottom:14px}
+.lede{font-size:20px;line-height:1.55;color:var(--ink);max-width:36em}
+.meta{
+  font-family:var(--mono);font-size:13px;color:var(--dim);
+  margin-top:20px;line-height:2;
+}
+.meta b{color:var(--ink);font-weight:600}
+
+h2{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--acc);font-weight:600;
+  margin:64px 0 16px;padding-top:22px;border-top:1px solid var(--hair);
+}
+h3{font-size:19px;font-weight:700;margin:30px 0 8px}
+p{margin:0 0 14px;max-width:40em}
+p.dim,span.dim{color:var(--dim)}
+a{color:var(--acc)}
+a:hover{text-decoration-thickness:2px}
+strong{font-weight:700}
+em{font-style:italic}
+hr{border:0;border-top:1px solid var(--hair);margin:42px 0}
+
+ul.plain{list-style:none;max-width:40em}
+ul.plain li{padding:7px 0;border-bottom:1px solid var(--hair)}
+ul.disc{padding-left:22px;max-width:38em}
+ul.disc li{margin-bottom:8px}
+ol{padding-left:24px;max-width:38em}
+ol li{margin-bottom:8px}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:15.5px;margin:12px 0 20px}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+   color:var(--dim);text-align:left;padding:6px 14px 6px 0;border-bottom:2px solid var(--ink)}
+td{padding:8px 14px 8px 0;border-bottom:1px solid var(--hair);vertical-align:top}
+td.mono,span.mono{font-family:var(--mono);font-size:13.5px}
+
+/* ---------- code ---------- */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  font-family:var(--mono);font-size:13.5px;line-height:1.6;
+  padding:18px 20px;border-radius:6px;overflow-x:auto;
+  margin:16px 0 22px;position:relative;
+}
+pre .cm{color:var(--code-dim)} /* comment span, optional */
+code{
+  font-family:var(--mono);font-size:.88em;
+  background:#efece4;padding:2px 6px;border-radius:4px;
+}
+pre code{background:none;padding:0;font-size:inherit}
+button.copy{
+  position:absolute;top:10px;right:10px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:var(--code-dim);background:none;border:1px solid #3a362c;
+  border-radius:4px;padding:4px 9px;cursor:pointer;
+}
+button.copy:hover{color:var(--code-ink);border-color:var(--code-dim)}
+
+/* ---------- callouts ---------- */
+.goals,.callout,.hw,.demo{
+  border:1px solid var(--hair);border-radius:6px;
+  padding:18px 22px;margin:22px 0;max-width:44em;
+}
+.goals{background:#fff;border-left:3px solid var(--acc)}
+.goals .label,.hw .label,.callout .label,.demo .label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--acc);display:block;margin-bottom:10px;
+}
+.goals ul{list-style:none}
+.goals li{padding:4px 0 4px 22px;position:relative}
+.goals li::before{content:"→";position:absolute;left:0;color:var(--acc);
+  font-family:var(--mono);font-size:13px}
+.hw{background:var(--acc-soft);border-color:#f3d9c4}
+.callout{background:#fff}
+.demo{background:#fff;border-style:dashed;border-color:#cfc9bb}
+
+/* listening list */
+.listen{list-style:none;max-width:44em;margin:12px 0 20px}
+.listen li{padding:10px 0;border-bottom:1px solid var(--hair)}
+.listen .who{font-family:var(--mono);font-size:12px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.08em}
+.listen .why{color:var(--dim);font-size:15px;display:block;margin-top:2px}
+
+/* schedule strip on day pages */
+.sched{font-family:var(--mono);font-size:12.5px;color:var(--dim);
+  display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 0;
+  padding:12px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.sched b{color:var(--ink)}
+
+/* ---------- syllabus grid (landing) ---------- */
+.week-label{font-family:var(--mono);font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim);margin:30px 0 12px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+@media(max-width:560px){.days{grid-template-columns:1fr}}
+.daycard{
+  display:block;border:1px solid var(--hair);border-radius:6px;
+  padding:16px 18px;text-decoration:none;color:var(--ink);background:#fff;
+  transition:border-color .12s;
+}
+.daycard:hover{border-color:var(--acc)}
+.daycard .dnum{font-family:var(--mono);font-size:11.5px;color:var(--dim);
+  letter-spacing:.08em;display:flex;justify-content:space-between}
+.daycard .dtitle{font-size:17.5px;font-weight:700;margin-top:6px;line-height:1.3}
+.daycard .dsub{font-size:14px;color:var(--dim);margin-top:4px;line-height:1.45}
+.daycard.today{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.daycard.today .dnum::after{content:"TODAY";color:var(--acc);font-weight:700}
+
+/* ---------- prev/next footer ---------- */
+.pager{display:flex;justify-content:space-between;gap:14px;margin-top:70px;
+  padding-top:22px;border-top:1px solid var(--hair);
+  font-family:var(--mono);font-size:13px}
+.pager a{text-decoration:none;color:var(--ink)}
+.pager a:hover{color:var(--acc)}
+.pager .plabel{display:block;font-size:11px;color:var(--dim);letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+.pager .next{text-align:right}
+
+footer.site{
+  max-width:720px;margin:0 auto;padding:26px 22px 60px;
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);line-height:1.9;
+  border-top:1px solid var(--hair);
+}
+footer.site a{color:var(--dim)}
+
+/* keyboard / demo widgets */
+.pads{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.pads button{
+  font-family:var(--mono);font-size:13px;padding:12px 14px;min-width:52px;
+  border:1px solid var(--hair);border-radius:6px;background:#fff;cursor:pointer;
+}
+.pads button:active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.ctl{display:flex;align-items:center;gap:12px;margin:10px 0;font-family:var(--mono);font-size:13px}
+.ctl input[type=range]{flex:1;accent-color:var(--acc)}
+.ctl output{min-width:90px;text-align:right;color:var(--dim)}
+canvas.scope{width:100%;height:120px;background:var(--code-bg);border-radius:6px;display:block;margin:10px 0}
+button.big{
+  font-family:var(--mono);font-size:14px;letter-spacing:.08em;
+  background:var(--acc);color:#fff;border:0;border-radius:6px;
+  padding:13px 26px;cursor:pointer;
+}
+button.big:hover{background:#a33509}
+button.big[disabled]{background:var(--hair);color:var(--dim);cursor:default}
+
+@media print{
+  nav.top,.pager,button.copy{display:none}
+  body{font-size:12pt}
+  pre{white-space:pre-wrap;border:1px solid #ccc;color:#000;background:#fff}
+}

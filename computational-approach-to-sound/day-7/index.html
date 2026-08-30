@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 7 — Sensors and Ensembles · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 7 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 7 · Tuesday 8 September 2026 · RTA 307</div>
+  <h1>Sensors and Ensembles</h1>
+  <p class="lede">The phone's hidden organs — accelerometer, gyroscope, microphone —
+     and what happens when six instruments play in one room. The day ends with the
+     week's big decision: concept lock at 17:00.</p>
+  <div class="sched">
+    <span><b>10:00</b> user-study debrief</span>
+    <span><b>10:30</b> tilt &amp; shake</span>
+    <span><b>12:00</b> the mic as a sensor</span>
+    <span><b>14:00</b> ensembles</span>
+    <span><b>15:30</b> concept work</span>
+    <span><b>17:00</b> concept lock</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>map tilt and shake to sound, with iOS permissions handled</li>
+      <li>use microphone level and spectrum as a control signal</li>
+      <li>name four ways phones can play together, and their costs</li>
+      <li>commit to your A3 concept — on one page, signed and timestamped</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — User-Study Debrief</h2>
+  <p>Around the room: what did your home tester try first? Where did they get stuck?
+     Two patterns to listen for — they recur in every study ever run: people try the
+     gesture the <em>surface suggests</em> (not the one you designed), and they
+     stop exploring the moment something sounds "wrong." Both are design inputs for
+     the checklist from yesterday, especially failure-tolerance.</p>
+
+  <h2>10:30 — Tilt and Shake</h2>
+  <p>Every phone carries an accelerometer (linear force, including gravity) and a
+     gyroscope (rotation). p5.js hands them to you as
+     <code>rotationX / rotationY</code> (tilt, in degrees) and
+     <code>accelerationX / Y / Z</code>. One catch: <strong>iOS requires a
+     permission dialog, and the request must come from inside a real touch</strong>.
+     This block — already wired into the
+     <a href="../starters/instrument/">instrument starter</a> — is the incantation:</p>
+<pre><code>function touchStarted() {
+  // iOS 13+: motion sensors need explicit permission, requested in a gesture
+  if (typeof DeviceMotionEvent !== "undefined" &&
+      typeof DeviceMotionEvent.requestPermission === "function") {
+    DeviceMotionEvent.requestPermission();
+    DeviceOrientationEvent.requestPermission();
+  }
+  userStartAudio();
+  return false;
+}</code></pre>
+  <h3>Build 1 · Tilt-to-bend</h3>
+<pre><code>let osc, playing = false;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  osc = new p5.Oscillator('triangle');
+}
+
+function touchStarted() {
+  /* permission block from above goes here */
+  userStartAudio();
+  if (!playing) { osc.start(); osc.amp(0.3, 0.1); playing = true; }
+  return false;
+}
+
+function draw() {
+  background(20);
+  // rotationY: roughly -90 (tilt left) … +90 (tilt right)
+  let f = map(rotationY, -60, 60, 150, 900);
+  osc.freq(f, 0.05);                       // tilt = continuous bend, like meend
+  fill(230); textSize(24); textAlign(CENTER);
+  text(nf(f, 3, 0) + " Hz", width / 2, height / 2);
+}</code></pre>
+  <p>Hold the phone flat and rock it — the pitch pours. This is the gesture no
+     keyboard has: <strong>continuous, embodied, analog.</strong> Day 4's meend
+     lives in this sensor.</p>
+  <h3>Build 2 · Shake-to-strike</h3>
+  <p class="dim">A <em>Tone</em> sketch (script line swapped); the tilt and mic
+     builds on this page are p5.sound sketches. One audio library per sketch.</p>
+<pre><code>let drum;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  drum = new Tone.MembraneSynth().toDestination();
+  setShakeThreshold(35);                   // how hard is a "shake"
+}
+
+function deviceShaken() {
+  drum.triggerAttackRelease("G1", "8n");   // the phone is now a damru
+}</code></pre>
+  <p>Or read <code>accelerationX/Y/Z</code> yourself and make intensity matter —
+     a many-to-one mapping: total shake energy → drum pitch or drive.</p>
+
+  <h2>12:00 — The Microphone as a Sensor</h2>
+  <p>The mic isn't only for recording — it is a continuous input device.
+     <em>Level</em> gives you breath control (Ocarina's whole trick); <em>spectrum</em>
+     (FFT — the analyser from Day 1, pointed at the room) lets sound control sound:</p>
+<pre><code>let mic, fft, osc;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  mic = new p5.AudioIn();
+  fft = new p5.FFT();
+  fft.setInput(mic);
+  osc = new p5.Oscillator('sine');
+}
+
+function touchStarted() {
+  userStartAudio();
+  mic.start();                      // triggers the browser's mic permission
+  osc.start(); osc.amp(0);
+  return false;
+}
+
+function draw() {
+  background(20);
+  let level = mic.getLevel();       // 0 … ~0.3 — loudness at the mic
+  osc.amp( constrain(level * 4, 0, 0.5), 0.05 );   // blow to sound
+  let spectrum = fft.analyze();     // 1024 bands, like Day 1's demo
+  stroke(200, 60, 30);
+  for (let i = 0; i &lt; spectrum.length; i += 8)
+    line(i / 8 * 8, height, i / 8 * 8, height - spectrum[i]);
+}</code></pre>
+  <p>Ideas this opens: hum into the phone and have it harmonize · a sound-level
+     "hot potato" game · an instrument only playable by whistling · one phone
+     listening to another (hold that thought until 14:00).</p>
+  <p class="dim">Optional spice, for a team that wants it: hand-pose tracking in the
+     browser (ml5.js handPose) — wave at the camera, play. It costs a webcam-angle
+     setup and some jitter-taming; budget a full build day if you choose it.</p>
+
+  <h2>14:00 — Ensembles: Making Phones Play Together</h2>
+  <p>Six phones is a sound system with no cables and no mixer — but "together" must
+     be designed. Four strategies, cheap to expensive:</p>
+  <table>
+    <tr><th>Strategy</th><th>How</th><th>Cost / character</th></tr>
+    <tr><td><strong>Human sync</strong></td>
+        <td>a count-in, a conductor, eye contact — musicians have always done this</td>
+        <td>free; drift becomes texture; rehearsal is the technology</td></tr>
+    <tr><td><strong>Designed interlock</strong></td>
+        <td>parts that don't need a shared clock: drones, washes, call-and-response,
+            one phone per bol of the theka</td>
+        <td>free; composition absorbs the sync problem — the strategy most great
+            phone pieces use</td></tr>
+    <tr><td><strong>Acoustic chaining</strong></td>
+        <td>phone A's speaker plays into phone B's mic (this morning's sketch)</td>
+        <td>free; fragile and gorgeous — a whisper-chain of machines through air</td></tr>
+    <tr><td><strong>Network clock</strong></td>
+        <td>one shared tempo over WebSocket; phones schedule against it</td>
+        <td>a server + a day of debugging. Real, and available if a band truly needs
+            it — but justify it against the three free options first</td></tr>
+  </table>
+  <h3>Demo: six phones, one beat</h3>
+  <p>Everyone opens the same metronome sketch; we start on a spoken count of four.
+     Listen to the drift build over one minute — that phasing is exactly Steve
+     Reich's discovery, and the room must decide: is it a bug, or the piece?</p>
+
+  <h2>15:30 — Concept Work → 17:00 Concept Lock</h2>
+  <p>Solo, pairs, or one band — decide today. By 17:00, each project hands in a
+     <strong>one-page instrument spec</strong>:</p>
+  <div class="callout">
+    <span class="label">The one-page spec</span>
+    <ol style="margin-bottom:0">
+      <li><strong>Name</strong> of the instrument, and who plays it (solo / pair / band).</li>
+      <li><strong>The sentence:</strong> "You ______, and it ______." If the sentence
+          needs a paragraph, the concept isn't locked yet.</li>
+      <li><strong>The mapping table:</strong> every gesture → every sound parameter,
+          in yesterday's vocabulary (one-to-one, one-to-many, generative…).</li>
+      <li><strong>Sensors used:</strong> touch / tilt / shake / mic — and nothing you
+          haven't tested today.</li>
+      <li><strong>The 30-second test:</strong> what a stranger will manage unaided.</li>
+      <li><strong>Showcase plan:</strong> cabled into the mixer, or phone speakers —
+          and what the performance's one-minute shape is.</li>
+      <li><strong>Biggest risk + fallback:</strong> the feature you'll cut on
+          Thursday if it fights back.</li>
+      <li><strong>Signature and timestamp</strong> — the lock is a recorded fact,
+          per the house rule.</li>
+    </ol>
+  </div>
+  <p>Scope truth, from every project that has ever shipped: <strong>the demo that
+     works is the one with one idea done well.</strong> The spec exists so that on
+     Thursday, when time is short, you cut features instead of quality.</p>
+
+  <div class="hw">
+    <span class="label">Tonight</span>
+    <p style="margin-bottom:0">Gather your instrument's raw material: samples
+       recorded (per the house rule — where, when), reference tracks, colour and
+       type choices for its face. Tomorrow is all build; arrive with nothing left to
+       decide.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-6/"><span class="plabel">Day 6</span>← The Screen as a Control Surface</a>
+    <a class="next" href="../day-8/"><span class="plabel">Day 8</span>Build I →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 1 — When Is Sound Music? · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 1 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 1 · Monday 31 August 2026 · RTA 307</div>
+  <h1>When Is Sound Music?</h1>
+  <p class="lede">Listening at the boundary between noise, sound, and music. The
+     physics of a vibration. Computation with no computer. And a first line of code
+     that makes a sound.</p>
+  <div class="sched">
+    <span><b>10:00</b> introductions + house rule</span>
+    <span><b>10:45</b> listening session</span>
+    <span><b>12:00</b> physics of sound</span>
+    <span><b>14:00</b> computation, unplugged</span>
+    <span><b>15:30</b> first code</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>argue — with examples — about where sound ends and music begins</li>
+      <li>explain frequency, amplitude, and timbre, and point at each on a live spectrum</li>
+      <li>describe a computation as instructions + state + repetition, without a computer</li>
+      <li>run a p5.js sketch that makes a sound, from your own editor account</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — The House Rule</h2>
+  <p>One rule governs everything recorded in this workshop:</p>
+  <div class="callout">
+    <p style="margin-bottom:0"><strong>Every fact recorded here carries a true
+    timestamp — to the minute when known, an honest window when not. Precision may
+    relax; truthfulness may not.</strong></p>
+  </div>
+  <p>Where this comes from: the allotted list with your six names on it reached the
+     facilitator on <span class="mono">Thursday 27 August 2026, 11:08 AM</span>. That
+     minute is known, so that is the minute on record. When you hand in a field
+     recording, it carries the minute it was made. When you don't know the minute, you
+     say so — "between 6 and 7 pm" is honest; a made-up "18:23" is not.</p>
+  <p>Why a sound workshop cares: sound is the time-based medium. A sound <em>is</em>
+     a pressure pattern unfolding in time; a recording is a claim about what happened
+     at a particular moment. Getting comfortable with honest time is getting
+     comfortable with the material itself.</p>
+
+  <h2>10:45 — Listening Session: Boundary Cases</h2>
+  <p>Eyes closed for each one. After each: one word, from each person, no discussion.
+     Discussion comes after the whole list.</p>
+  <ul class="listen">
+    <li><span class="who">John Cage</span> 4′33″ (1952) — performed, not just described.
+        We sit through a real four minutes and thirty-three seconds of it, in RTA 307.
+        <span class="why">The frame makes the music. What did you hear once nothing was provided?</span></li>
+    <li><span class="who">Tanpura</span> a solo tanpura drone, several minutes, no soloist
+        <span class="why">Almost nothing changes. Is unchanging sound music? (Hold this — it returns on Day 4.)</span></li>
+    <li><span class="who">Field recording</span> Bengaluru traffic at a junction
+        <span class="why">Pitch, rhythm, texture, dynamics — everything music has, unorganized. Or is it?</span></li>
+    <li><span class="who">Azaan</span> the call to prayer
+        <span class="why">Unmistakably melodic; its own tradition does not call it music. Who decides?</span></li>
+    <li><span class="who">Sine tone</span> 440 Hz, pure, 30 seconds
+        <span class="why">The atom of sound. Nothing but frequency and amplitude. Is it below music, or above it?</span></li>
+    <li><span class="who">Birdsong</span> one bird, close-miked
+        <span class="why">Phrases, repetition, variation — composition without a composer?</span></li>
+    <li><span class="who">Ryoji Ikeda</span> from <em>dataplex</em>
+        <span class="why">Clicks, sines, and errors as a deliberate aesthetic. Failure sounds, organized.</span></li>
+  </ul>
+  <h3>Exercise: the axis</h3>
+  <p>One long line on the table: <span class="mono">SOUND ————————— MUSIC</span>.
+     Each listening example goes on a card. Place the cards together, out loud. You
+     must argue for every placement, and you may move anyone else's card if you argue
+     better. There is no answer key — the argument is the point. Photograph the final
+     axis and note the time (house rule).</p>
+  <p class="dim">The working definition we'll carry forward, due to Edgard Varèse:
+     <em>music is organized sound</em>. The workshop question then becomes — organized
+     by whom, or by what? By Day 10 the answer will include: by a program you wrote.</p>
+
+  <h2>12:00 — The Physics of a Sound</h2>
+  <p>Everything you heard this morning is one phenomenon: <strong>something vibrates,
+     air carries the vibration as a pressure wave, your eardrum vibrates in sympathy.</strong>
+     Three measurable properties of that wave account for most of what you can say
+     about a sound:</p>
+  <table>
+    <tr><th>Property</th><th>Physical meaning</th><th>You hear it as</th></tr>
+    <tr><td><strong>Frequency</strong></td>
+        <td>vibrations per second, in hertz (Hz)</td>
+        <td>pitch — high or low. Humans hear roughly 20 Hz to 20,000 Hz</td></tr>
+    <tr><td><strong>Amplitude</strong></td>
+        <td>how far the pressure swings from rest</td>
+        <td>loudness</td></tr>
+    <tr><td><strong>Timbre</strong></td>
+        <td>the <em>shape</em> of the vibration — which extra frequencies
+            (harmonics) ride along with the fundamental</td>
+        <td>the "colour" — why a flute and a sitar on the same note sound nothing
+            alike</td></tr>
+  </table>
+  <p>A <strong>sine wave</strong> is the only sound with exactly one frequency in it.
+     Every other sound — a plucked string, a voice, a square wave — is a stack of
+     sines: a <strong>fundamental</strong> plus <strong>harmonics</strong> at 2×, 3×,
+     4×… the fundamental. (Day 3 builds all of Western harmony out of this one fact.)</p>
+
+  <div class="demo">
+    <span class="label">Live demo — see a sound</span>
+    <p>Press start. Left canvas is the waveform (pressure over time); right is the
+       spectrum (which frequencies are present). Switch waveforms and watch the
+       harmonics appear — the ear hears "brighter," the spectrum shows "more
+       partials." This runs on the same Web Audio engine we will program all
+       fortnight.</p>
+    <button class="big" id="power">▶ start</button>
+    <div class="ctl"><span>wave</span>
+      <div class="pads" style="margin:0">
+        <button data-w="sine">sine</button>
+        <button data-w="triangle">triangle</button>
+        <button data-w="square">square</button>
+        <button data-w="sawtooth">saw</button>
+      </div>
+    </div>
+    <div class="ctl"><span>freq</span>
+      <input type="range" id="freq" min="55" max="1760" value="220" step="1">
+      <output id="freqOut">220 Hz</output></div>
+    <div class="ctl"><span>level</span>
+      <input type="range" id="amp" min="0" max="0.5" value="0.2" step="0.01">
+      <output id="ampOut">0.20</output></div>
+    <canvas class="scope" id="wave"></canvas>
+    <canvas class="scope" id="spec"></canvas>
+  </div>
+
+  <p>Vocabulary to leave the morning with: <code>Hz</code>, <code>amplitude</code>,
+     <code>waveform</code>, <code>fundamental</code>, <code>harmonic</code>,
+     <code>spectrum</code>. Six words; everything else in this workshop is built from
+     them.</p>
+
+  <h2>14:00 — Computation, Unplugged</h2>
+  <p>Before any code: what a computer actually does, performed by humans.</p>
+  <p>A computation needs only three things:</p>
+  <ol>
+    <li><strong>Instructions</strong> — a fixed list of simple actions</li>
+    <li><strong>State</strong> — something that remembers (a number, a card, a raised hand)</li>
+    <li><strong>Repetition</strong> — doing the list again, and again, with the state
+        carrying over</li>
+  </ol>
+  <h3>Exercise: the human step sequencer</h3>
+  <ol>
+    <li>Six chairs in a row. Each person <em>is</em> one step and holds a card with
+        one instruction: <span class="mono">CLAP</span>, <span class="mono">HUM (any
+        note)</span>, <span class="mono">HISS</span>, <span class="mono">SNAP</span>,
+        <span class="mono">STOMP</span>, or <span class="mono">REST</span>.</li>
+    <li>The facilitator is the clock: walks the row at a steady tempo, pointing.
+        When pointed at, execute your card. End of row → loop to the start.</li>
+    <li>Run it until it grooves. Then <strong>mutate the program</strong>: swap two
+        cards (edit), have one person execute only every second pass (conditional),
+        let one card say "copy whatever step 3 did" (reference). Each mutation is one
+        programming idea, felt before it is named.</li>
+  </ol>
+  <p class="dim">What you just did is exactly what Tone.js's sequencer will do on
+     Day 5 — the clock was a loop, the cards were an array, the tempo was BPM.</p>
+
+  <h2>15:30 — First Contact With Code</h2>
+  <ol>
+    <li>Go to <a href="https://editor.p5js.org">editor.p5js.org</a> and
+        <strong>create an account</strong> — it saves every sketch and gives each one
+        a shareable link. This account is your instrument case for two weeks.</li>
+    <li>File → New. You get an empty sketch with <code>setup()</code> (runs once)
+        and <code>draw()</code> (runs ~60 times a second — a loop, like the walk
+        along the chairs).</li>
+    <li>Replace everything with this, press play, then <strong>click the canvas and
+        move the mouse</strong>:</li>
+  </ol>
+<pre><code>let osc;
+
+function setup() {
+  createCanvas(400, 400);
+  osc = new p5.Oscillator('sine');   // the same oscillator from the demo
+}
+
+function mousePressed() {
+  osc.start();                       // browsers unlock audio only after a click
+}
+
+function mouseMoved() {
+  osc.freq( map(mouseX, 0, width, 100, 1000) );  // left–right = pitch
+  osc.amp(  map(mouseY, height, 0, 0, 0.5) );    // up–down   = loudness
+  background(mouseX / 2, 100, mouseY / 2);
+}</code></pre>
+  <p>Three things worth noticing, today only at a glance:</p>
+  <ul class="disc">
+    <li><code>osc</code> is <strong>state</strong> — a thing we made once and keep
+        acting on.</li>
+    <li><code>mousePressed</code> and <code>mouseMoved</code> are
+        <strong>instructions that wait for you</strong> — code as a listening thing.</li>
+    <li><code>map(...)</code> converts one range into another — mouse position into
+        hertz. <strong>This one function is the whole secret of instrument
+        design</strong>, and Week 2 is built on it: gesture in, sound out.</li>
+  </ul>
+  <p>Play with the numbers. Break it. The editor's play button is also a reset
+     button; nothing can be damaged.</p>
+
+  <div class="hw">
+    <span class="label">Homework — due tomorrow 10:00</span>
+    <p><strong>Field recording:</strong> capture one sound from your evening that is
+       <em>almost</em> music — with your phone's voice recorder, 30–90 seconds.
+       Per the house rule, note <strong>where</strong> it was recorded and
+       <strong>when, to the minute</strong>. Bring it on the phone; we open Day 2 by
+       listening to all six.</p>
+    <p style="margin-bottom:0">Also: if you don't yet have a p5.js editor account,
+       make one before tomorrow.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../"><span class="plabel">Up</span>Syllabus</a>
+    <a class="next" href="../day-2/"><span class="plabel">Day 2</span>A Crash Course in JavaScript →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+<script>
+(function(){
+  var ctx, osc, gain, an, running=false, wave="sine";
+  var power=document.getElementById("power");
+  var freq=document.getElementById("freq"), freqOut=document.getElementById("freqOut");
+  var amp=document.getElementById("amp"), ampOut=document.getElementById("ampOut");
+  var wCan=document.getElementById("wave"), sCan=document.getElementById("spec");
+
+  function fit(c){var r=c.getBoundingClientRect();c.width=r.width*devicePixelRatio;
+    c.height=r.height*devicePixelRatio;}
+  function start(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    osc=ctx.createOscillator(); gain=ctx.createGain(); an=ctx.createAnalyser();
+    an.fftSize=2048;
+    osc.type=wave; osc.frequency.value=+freq.value; gain.gain.value=+amp.value;
+    osc.connect(gain); gain.connect(an); an.connect(ctx.destination);
+    osc.start(); running=true; power.textContent="■ stop";
+    fit(wCan); fit(sCan); draw();
+  }
+  function stop(){osc.stop(); ctx.close(); running=false; power.textContent="▶ start";}
+  power.addEventListener("click",function(){running?stop():start();});
+
+  document.querySelectorAll("[data-w]").forEach(function(b){
+    b.addEventListener("click",function(){wave=b.getAttribute("data-w");
+      if(running) osc.type=wave;});
+  });
+  freq.addEventListener("input",function(){freqOut.textContent=freq.value+" Hz";
+    if(running) osc.frequency.setTargetAtTime(+freq.value,ctx.currentTime,0.02);});
+  amp.addEventListener("input",function(){ampOut.textContent=(+amp.value).toFixed(2);
+    if(running) gain.gain.setTargetAtTime(+amp.value,ctx.currentTime,0.02);});
+
+  var td=new Uint8Array(2048), fd;
+  function draw(){
+    if(!running) return;
+    requestAnimationFrame(draw);
+    var w=wCan.width,h=wCan.height,g=wCan.getContext("2d");
+    an.getByteTimeDomainData(td);
+    g.fillStyle="#16140f"; g.fillRect(0,0,w,h);
+    g.strokeStyle="#e8e3d6"; g.lineWidth=2; g.beginPath();
+    for(var i=0;i<td.length;i++){
+      var x=i/td.length*w, y=td[i]/255*h;
+      i?g.lineTo(x,y):g.moveTo(x,y);
+    }
+    g.stroke();
+    fd=fd||new Uint8Array(an.frequencyBinCount);
+    an.getByteFrequencyData(fd);
+    var w2=sCan.width,h2=sCan.height,g2=sCan.getContext("2d");
+    g2.fillStyle="#16140f"; g2.fillRect(0,0,w2,h2);
+    g2.fillStyle="#c2410c";
+    var bins=Math.floor(fd.length/3);            // show up to ~7 kHz
+    var bw=w2/bins;
+    for(var j=0;j<bins;j++){
+      var bh=fd[j]/255*h2;
+      g2.fillRect(j*bw,h2-bh,Math.max(bw-1,1),bh);
+    }
+  }
+})();
+</script>
+</body>
+</html>

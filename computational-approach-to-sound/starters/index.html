@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Starter Templates · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Starters</span>
+</nav>
+<main>
+  <div class="kicker">Starter Templates</div>
+  <h1>Pre-solved Plumbing</h1>
+  <p class="lede">Working pages that already handle the three phone gotchas — audio
+     unlock, iOS motion permission, HTTPS — so build days are spent on instruments,
+     not on plumbing.</p>
+
+  <h2>Pocket Theremin</h2>
+  <p><a href="pocket-theremin/">Open it</a> — on a phone, ideally. The Day 6
+     reference build: vanilla Web Audio, a sawtooth through a lowpass,
+     x = pitch, y = brightness. Read its source (it is one short, commented file)
+     after you've built your own from the Day 6 notes, and compare choices.</p>
+
+  <h2>Instrument Starter — the A3 fork base</h2>
+  <p><a href="instrument/">Open the live demo</a> — a scale-locked multitouch pad,
+     which is the template running its placeholder instrument. To make it yours:</p>
+  <ol>
+    <li>In the <a href="https://editor.p5js.org">p5.js editor</a>: File → New.</li>
+    <li>In the editor's <span class="mono">index.html</span>,
+        <strong>replace the p5.sound script line</strong> with
+        <code>&lt;script src="https://unpkg.com/tone@14.7.77/build/Tone.js"&gt;&lt;/script&gt;</code>
+        — p5.sound and Tone conflict; a sketch uses one or the other, never
+        both.</li>
+    <li>Open the raw template — <a href="instrument/sketch.js">sketch.js</a> —
+        select all, and paste it over the editor's
+        <span class="mono">sketch.js</span>. Save, run.</li>
+    <li>Edit only the sections marked
+        <span class="mono">&gt;&gt;&gt; YOUR INSTRUMENT</span>:
+        <span class="mono">makeSound()</span> (what it sounds like),
+        <span class="mono">gestureStart / Move / Tilt / Shake</span> (the mappings),
+        <span class="mono">faces()</span> (what it looks like).</li>
+    <li>Deploy by the Day 6 ritual: Share → Fullscreen →
+        <a href="../tools/qr/">QR</a> → phone.</li>
+  </ol>
+  <p class="dim">The plumbing beneath the marked sections — the START screen, the
+     permission incantations, the return-false hygiene, mouse fallbacks for laptop
+     testing — is commented. Read it once so it isn't magic; edit it rarely so it
+     keeps working.</p>
+
+  <h2>Sample Library</h2>
+  <p>An acoustic guitar, chromatic G3–B5, one mp3 per note, at
+     <a href="../assets/strings/">assets/strings/</a> — recorded for a previous
+     edition of this unit. Wire it to <code>Tone.Sampler</code> exactly as on
+     <a href="../day-5/">Day 5</a>. Filenames: <span class="mono">g3_Pick1.mp3 …
+     b5_Pick1.mp3</span>, sharps as <span class="mono">as4, cs5</span>.</p>
+
+  <div class="pager">
+    <a href="../"><span class="plabel">Up</span>← Syllabus</a>
+    <a class="next" href="../tools/qr/"><span class="plabel">Tool</span>QR Generator →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

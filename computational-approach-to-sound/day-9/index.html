@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 9 — Build II, Polish · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 9 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 9 · Thursday 10 September 2026 · RTA 307</div>
+  <h1>Build II — Polish</h1>
+  <p class="lede">Feature freeze at 10:00. Today is not for more — it is for
+     <em>better</em>: playability tuning, sound design, the instrument's face, its
+     documentation, and a real soundcheck. Tomorrow you perform.</p>
+  <div class="sched">
+    <span><b>10:00</b> feature freeze · tuning</span>
+    <span><b>12:00</b> cross-testing</span>
+    <span><b>14:00</b> documentation</span>
+    <span><b>15:30</b> QR posters</span>
+    <span><b>16:00</b> soundcheck + running order</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today</span>
+    <ul>
+      <li>your instrument passes the 30-second stranger test — verified, not assumed</li>
+      <li>it works on at least one Android and one iOS phone</li>
+      <li>documentation is drafted: video shot, writeup started, every fact stamped</li>
+      <li>you have soundchecked and know your slot in tomorrow's running order</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — Feature Freeze, Then Tuning</h2>
+  <p>The Day 7 spec named your cut-line; this is the morning you honour it.
+     Whatever doesn't work at 10:00 gets fixed or cut — nothing new gets added.
+     Then tune, against the Day 6 checklist, in this order:</p>
+  <ol>
+    <li><strong>Immediacy</strong> — any perceptible lag between gesture and sound?
+        Hunt it down (usually: heavy work inside <code>draw()</code>, or an attack
+        envelope slower than you think).</li>
+    <li><strong>Ranges</strong> — do the extremes of every mapping sound
+        <em>good</em>? A theremin that can screech at 8 kHz will, in a stranger's
+        hands, only screech. Clamp with <code>constrain()</code>; taste is mostly
+        range-setting.</li>
+    <li><strong>Silence</strong> — does the instrument stop cleanly when hands
+        leave? Clicks on release are envelope problems: give every stop a few
+        milliseconds of fade.</li>
+    <li><strong>Loudness</strong> — level-match against the other five projects;
+        soundcheck will confirm through the monitors.</li>
+  </ol>
+
+  <h2>12:00 — Cross-Testing</h2>
+  <p>Swap phones around the room until every instrument has run on at least one
+     Android and one iOS device — the eels differ per platform, and better to meet
+     them today than at 15:00 tomorrow. Then the harder swap: <strong>trade
+     instruments and say nothing.</strong> Watch a colleague meet yours cold.
+     Ninety seconds. That is the 30-second-stranger test with a stopwatch on it;
+     what confuses them gets one fix each, this afternoon.</p>
+
+  <h2>14:00 — Documentation (Half of A3)</h2>
+  <div class="callout">
+    <span class="label">Per project, due before the showcase</span>
+    <ol style="margin-bottom:0">
+      <li><strong>The live URL</strong> — the instrument itself, deployed and
+          public. The lasting artifact: the workshop ends, the URL doesn't.</li>
+      <li><strong>A short video (60–120s)</strong> — phone-shot is fine: hands,
+          screen, and sound, showing the mapping legibly. Shooting-brief: film in
+          the quietest twenty minutes you can find, real audio, no music bed over
+          the instrument.</li>
+      <li><strong>One page</strong> — the instrument's name; the "you ______, it
+          ______" sentence; the final mapping table (as built, not as dreamed); what
+          changed since concept lock and why; what you'd build in week three.</li>
+      <li><strong>Timestamps throughout</strong>, per the house rule: when recorded,
+          when shot, when deployed — to the minute where known. Your daily log
+          sentences from Days 8–9 slot straight in here.</li>
+    </ol>
+  </div>
+
+  <h2>15:30 — QR Posters</h2>
+  <p>One A4 per instrument for the showcase wall: the instrument's name, the
+     players, and a large QR to the live URL — made with
+     <a href="../tools/qr/">the QR tool</a> (it has a print button). The audience
+     plays your instrument on their own phones minutes after seeing it performed.
+     Design the poster like it belongs to the instrument — same face, same type
+     spirit.</p>
+
+  <h2>16:00 — Soundcheck and Running Order</h2>
+  <ol>
+    <li><strong>Cabled acts:</strong> phone → 3.5mm/USB-C dongle → mixer → monitors.
+        Set gain per act; mark levels; note who needs which dongle and tape it to
+        the running order.</li>
+    <li><strong>Speaker acts</strong> (distributed/ensemble pieces): position the
+        phones in the room, walk the audience path, listen from where they'll sit —
+        six phone speakers around a room is a spatial instrument no mixer gives
+        you.</li>
+    <li><strong>Running order by 16:45</strong>, printed: act, players, cable or
+        speakers, one-line intro, who resets the room after. Ensemble piece — if
+        the cohort has one — closes.</li>
+  </ol>
+
+  <div class="hw">
+    <span class="label">Tonight</span>
+    <p style="margin-bottom:0">Finish the one-pager. Charge the phone. Charge the
+       backup phone. Do not refactor anything after 21:00 — tonight's clever idea
+       is tomorrow's silent instrument, and the version that works is the version
+       that performs.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-8/"><span class="plabel">Day 8</span>← Build I</a>
+    <a class="next" href="../day-10/"><span class="plabel">Day 10</span>Showcase →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

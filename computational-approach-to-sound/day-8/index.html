@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 8 — Build I · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 8 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 8 · Wednesday 9 September 2026 · RTA 307</div>
+  <h1>Build I</h1>
+  <p class="lede">A full day of making. The spec is locked; today it becomes a thing
+     that makes sound on a phone. The only deadline: at 13:00, everyone demos
+     <em>whatever exists</em> — broken is fine, invisible is not.</p>
+  <div class="sched">
+    <span><b>10:00</b> build</span>
+    <span><b>13:00</b> standup — broken demos welcome</span>
+    <span><b>14:00</b> build + 1-on-1s</span>
+    <span><b>16:45</b> deploy &amp; commit ritual</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today</span>
+    <ul>
+      <li>your instrument's core mapping works on a real phone, from a URL</li>
+      <li>it has been heard by the room once, in whatever state</li>
+      <li>you know your riskiest remaining unknown — and tomorrow's first task</li>
+    </ul>
+  </div>
+
+  <h2>Start From the Starter</h2>
+  <p>Fork the <a href="../starters/instrument/">instrument starter</a> into your own
+     editor account (open it, then File → Duplicate in the p5 editor after pasting —
+     full instructions on the starter page). It already solves the plumbing you
+     should not be spending today on: the start-gesture audio unlock, iOS motion
+     permission, full-screen canvas, touch scaffolding, on-screen status. You write
+     the instrument; the template holds the umbrella.</p>
+  <h3>Build in this order</h3>
+  <ol>
+    <li><strong>Sound first, mute-proof second, looks last.</strong> A beautiful
+        silent instrument is a poster.</li>
+    <li><strong>Core mapping on the laptop</strong> (mouse stands in for finger) —
+        then deploy to the phone and re-tune the ranges. Fingers and mice have
+        different geometries; what feels right under a mouse is often cramped under
+        a thumb.</li>
+    <li><strong>One sensor at a time.</strong> Touch fully working before tilt joins;
+        tilt before mic. Two half-wired sensors debug like eels.</li>
+    <li><strong>Deploy every 30–45 minutes</strong> — the ritual from Day 6. The
+        phone is the truth; the laptop preview is a rumour.</li>
+  </ol>
+
+  <h2>13:00 — Standup</h2>
+  <p>Two minutes per project, on the actual phone, through the monitors or held to
+     the mic: what works, what doesn't, what you'll try next. Saying "it broke when
+     I added tilt" out loud is not an admission — it is the fastest known debugging
+     tool, and someone in the room has usually already fixed the same eel.</p>
+
+  <h2>When It Breaks — the Usual Five</h2>
+  <table>
+    <tr><th>Symptom</th><th>First suspect</th></tr>
+    <tr><td>No sound on the phone, works on laptop</td>
+        <td>audio never unlocked: is <code>userStartAudio()</code> /
+            <code>Tone.start()</code> inside a real touch handler? Also: the
+            physical mute switch.</td></tr>
+    <tr><td>Tilt does nothing on iPhone</td>
+        <td>the permission request isn't inside a touch, or was denied once —
+            close the tab fully and reopen.</td></tr>
+    <tr><td>Page scrolls/zooms while playing</td>
+        <td>a touch handler isn't returning <code>false</code>.</td></tr>
+    <tr><td>Crackles, glitches, dies after a minute</td>
+        <td>too many voices/effects, or objects created inside
+            <code>draw()</code>/loops — build once in <code>setup()</code>, reuse
+            forever.</td></tr>
+    <tr><td>Sample won't load</td>
+        <td>URL typo, or an HTTP link on an HTTPS page — copy the address from the
+            <a href="../assets/strings/">assets folder</a> exactly.</td></tr>
+  </table>
+
+  <h2>16:45 — The Evening Ritual</h2>
+  <p>Before anyone leaves, per project: save in the editor · deploy to the phone ·
+     play it once through, however rough · note today's state in one sentence
+     <strong>with a timestamp</strong> in your project log (the log becomes Friday's
+     documentation — you are writing it already, a sentence a day).</p>
+
+  <div class="hw">
+    <span class="label">Tonight</span>
+    <p style="margin-bottom:0">Rest your ears — genuinely. Tomorrow is tuning day,
+       and tuning needs fresh ones. If you must do something: play your instrument
+       for one more stranger and write down, with a timestamp, the first thing they
+       tried.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-7/"><span class="plabel">Day 7</span>← Sensors and Ensembles</a>
+    <a class="next" href="../day-9/"><span class="plabel">Day 9</span>Build II — Polish →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

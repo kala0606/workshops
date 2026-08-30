@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 6 — The Screen as a Control Surface · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 6 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 6 · Monday 7 September 2026 · RTA 307 · Week 2</div>
+  <h1>The Screen as a Control Surface</h1>
+  <p class="lede">Week 2 begins: the phone becomes the instrument. Today — what makes
+     an instrument <em>playable</em>, the craft of mapping gesture to sound, and by
+     evening your first instrument is running on your own phone, from a URL.</p>
+  <div class="sched">
+    <span><b>10:00</b> weekend ideas round</span>
+    <span><b>10:30</b> playability + mapping</span>
+    <span><b>11:45</b> instrument studies</span>
+    <span><b>14:00</b> touch in code</span>
+    <span><b>15:30</b> the deployment ritual</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>critique an instrument in terms of its mappings, not its features</li>
+      <li>handle touch and multitouch in the browser</li>
+      <li>get a sketch from your laptop onto your phone in under a minute</li>
+      <li>play a pocket theremin you built, on your phone</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — Weekend Ideas</h2>
+  <p>Three instrument ideas each, on paper, two minutes per person. No feedback yet
+     except clarifying questions — the vocabulary for critique arrives at 10:30, and
+     concept lock isn't until tomorrow evening. Pin the sketches to the wall; they
+     stay up all week.</p>
+
+  <h2>10:30 — Playability, and the Craft of Mapping</h2>
+  <p>An instrument is not an app. An app helps you complete a task; an instrument
+     gives you a <em>voice</em>. The difference is made almost entirely by
+     <strong>mapping</strong> — the wiring between gesture and sound. You have been
+     mapping since Day 1: <code>map(mouseX, 0, width, 100, 1000)</code>. Now it
+     becomes design:</p>
+  <table>
+    <tr><th>Mapping</th><th>Pattern</th><th>Example</th></tr>
+    <tr><td><strong>one-to-one</strong></td>
+        <td>one gesture axis → one parameter</td>
+        <td>theremin: position → pitch. Legible, learnable, can feel thin</td></tr>
+    <tr><td><strong>one-to-many</strong></td>
+        <td>one gesture → several parameters at once</td>
+        <td>pressing harder opens filter + volume + vibrato — "expressive" lives here</td></tr>
+    <tr><td><strong>many-to-one</strong></td>
+        <td>several gestures fused → one parameter</td>
+        <td>shake intensity computed from three accelerometer axes</td></tr>
+    <tr><td><strong>generative</strong></td>
+        <td>gesture steers an autonomous process</td>
+        <td>you plant notes, the system grows them (Bloom); you set the raga, the engine sings (raga.fm)</td></tr>
+  </table>
+  <p>Five properties worth designing for — use them as a checklist against every
+     idea on the wall:</p>
+  <ol>
+    <li><strong>Immediacy.</strong> Sound within ~50 ms of the gesture, or the
+        instrument feels dead.</li>
+    <li><strong>Legibility.</strong> A watcher can roughly see what causes what.</li>
+    <li><strong>Repeatability.</strong> Same gesture, same result — else it's a toy,
+        not an instrument.</li>
+    <li><strong>Failure-tolerance.</strong> Wrong notes impossible (scale-locked), or
+        gracefully wrong. A stranger plays it in 30 seconds — that's the A3 bar.</li>
+    <li><strong>Depth.</strong> Something left to get better at. Easy to start ≠
+        quickly exhausted.</li>
+  </ol>
+  <p class="dim">Tension to hold: legibility and depth pull against each other. The
+     theremin is maximally legible and brutally deep. A step sequencer is shallow and
+     instantly satisfying. Both are honorable; know which you're building.</p>
+
+  <h2>11:45 — Instrument Studies</h2>
+  <p>Four browser/phone instruments, played on the room's phones, critiqued with the
+     new vocabulary — name each one's mappings before judging it:</p>
+  <ul class="listen">
+    <li><span class="who">raga.fm</span> generative raga engine
+        <span class="why">Generative mapping: the player chooses constraints, the engine performs. Where does "playing" begin and end?</span></li>
+    <li><span class="who">Bloom</span> Eno &amp; Chilvers (2008)
+        <span class="why">Tap = plant a note that loops and decays. One gesture, one-to-many consequences over minutes.</span></li>
+    <li><span class="who">Ocarina</span> Ge Wang / Smule (2008)
+        <span class="why">Blowing into the mic as breath control — the sensor nobody remembers the phone has. Tomorrow's subject.</span></li>
+    <li><span class="who">Borderlands</span> Chris Carlson (2012)
+        <span class="why">Granular sampling under multitouch — ten fingers, many-to-many mapping at its richest.</span></li>
+  </ul>
+
+  <h2>14:00 — Touch in Code</h2>
+  <p>On phones, p5.js gives you <code>touchStarted / touchMoved / touchEnded</code>
+     and a <code>touches[]</code> array (multitouch!). Two rules of the road:
+     <strong>return <code>false</code></strong> from touch handlers (stops the page
+     scrolling/zooming), and <strong>start audio inside the first touch</strong>
+     (browsers unlock sound only after a user gesture).</p>
+  <h3>Build 1 · The pocket theremin</h3>
+<pre><code>let osc, filt;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);   // fill the phone's screen
+  osc  = new p5.Oscillator('sawtooth');
+  filt = new p5.LowPass();
+  osc.disconnect();                          // unwire the default route...
+  osc.connect(filt);                         // ...and go through the filter
+}
+
+function touchStarted() {
+  userStartAudio();                          // the unlock gesture
+  osc.start();
+  osc.amp(0.4, 0.05);
+  return false;
+}
+
+function touchMoved() {
+  osc.freq( map(mouseX, 0, width, 80, 880) );        // x → pitch
+  filt.freq( map(mouseY, height, 0, 200, 4000) );    // y → brightness
+  return false;
+}
+
+function touchEnded() {
+  if (touches.length === 0) osc.amp(0, 0.2);         // silence on release
+  return false;
+}
+
+function draw() {                            // the instrument's face
+  background(20);
+  stroke(255); strokeWeight(3);
+  line(mouseX, 0, mouseX, height);
+  line(0, mouseY, width, mouseY);
+}</code></pre>
+  <p>A finished, styled version with the same mapping is at
+     <a href="../starters/pocket-theremin/">starters/pocket-theremin</a> — open it on
+     your phone right now to feel where you're headed. Then build your own anyway:
+     the point is owning every line.</p>
+  <h3>Build 2 · The multitouch pad</h3>
+  <p class="dim">A <em>Tone</em> sketch — new sketch, script line swapped per Day 3's
+     rule (the theremin above was a p5.sound sketch; one audio library per sketch).</p>
+<pre><code>let synth;
+let notes = ["C4", "D4", "E4", "G4", "A4", "C5"];   // pentatonic: no wrong notes
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  synth = new Tone.PolySynth(Tone.Synth).toDestination();  // many voices
+}
+
+function touchStarted() {
+  Tone.start();
+  for (let t of touches) {                    // EVERY current finger
+    let zone = floor( map(t.x, 0, width, 0, notes.length) );
+    zone = constrain(zone, 0, notes.length - 1);
+    synth.triggerAttackRelease(notes[zone], "8n");
+  }
+  return false;
+}
+
+function draw() {
+  background(20);
+  stroke(80);
+  for (let i = 1; i &lt; notes.length; i++)      // zone boundaries
+    line(i * width / notes.length, 0, i * width / notes.length, height);
+  fill(200, 60, 30); noStroke();
+  for (let t of touches) circle(t.x, t.y, 60); // show every finger
+}</code></pre>
+  <p>Extensions, roughly in order of ambition: map <code>t.y</code> to octave or
+     loudness · sustain while held (<code>triggerAttack</code> /
+     <code>triggerRelease</code> per zone) · two-finger chords by design · swap the
+     PolySynth for Friday's guitar sampler.</p>
+
+  <h2>15:30 — The Deployment Ritual</h2>
+  <p>The loop that keeps Week 2 alive. Practice it until it's boring:</p>
+  <ol>
+    <li>In the p5 editor: <strong>save</strong>, then File → Share →
+        <strong>Fullscreen</strong> link. (Editor links are HTTPS — which phones
+        require for audio and sensors. This is why the editor is our deploy
+        platform.)</li>
+    <li>Open <a href="../tools/qr/">the QR tool</a>, paste the link, show your
+        screen.</li>
+    <li>Scan with the phone's camera. Play.</li>
+  </ol>
+  <p>Save → QR → phone: <strong>under thirty seconds.</strong> Any change, re-save,
+     re-scan (or just reload on the phone — the URL stays the same). Everyone
+     deploys the theremin and the pad to their own phone before leaving today; that
+     is the exit ticket.</p>
+  <div class="callout">
+    <span class="label">Phone gotchas — solved once, today</span>
+    <p style="margin-bottom:0">① No sound until a real touch calls
+       <code>userStartAudio()</code> / <code>Tone.start()</code> — design a start
+       gesture into every instrument. ② iOS motion sensors need a permission button —
+       tomorrow's template handles it. ③ Sensors and audio require HTTPS — editor
+       links and this site both qualify. If a phone is silent: check the mute switch,
+       check the volume, check you touched before expecting sound — in that order.</p>
+  </div>
+
+  <div class="hw">
+    <span class="label">Homework — due tomorrow 10:00</span>
+    <p style="margin-bottom:0">Hand your phone, theremin open, to someone at home —
+       family, hostel, whoever is around. Say nothing. Watch ninety seconds. Note,
+       with a timestamp: what they tried first, where they got stuck, what they
+       enjoyed. This is your first user study, and it will change your A3 design
+       more than any critique in the room.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-5/"><span class="plabel">Day 5</span>← Timbre as Material</a>
+    <a class="next" href="../day-7/"><span class="plabel">Day 7</span>Sensors and Ensembles →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

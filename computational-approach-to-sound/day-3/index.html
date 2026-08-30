@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 3 — Pitch as Architecture · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 3 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 3 · Wednesday 2 September 2026 · RTA 307</div>
+  <h1>Pitch as Architecture</h1>
+  <p class="lede">The Western classical answer to "what is music": pitches locked in
+     ratios, stacked into chords, marching through time toward resolution. It is the
+     most machine-friendly music theory ever devised — by this afternoon your code
+     composes with it.</p>
+  <div class="sched">
+    <span><b>10:00</b> ugly/pretty listening</span>
+    <span><b>10:30</b> the harmonic series → 12 notes</span>
+    <span><b>12:00</b> a history in 40 minutes</span>
+    <span><b>14:00</b> the formula, in code</span>
+    <span><b>15:00</b> Tone.js + generative melody</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>derive the twelve-note system from a vibrating string</li>
+      <li>compute any equal-tempered pitch with <span class="mono">440 × 2^(n/12)</span></li>
+      <li>represent a scale as an array and a melody as a sequence</li>
+      <li>run a Tone.js loop that improvises in a major scale, forever</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — Ugly / Pretty</h2>
+  <p>Homework playback, ugliest first, timestamps declared. After each pretty sketch,
+     one question: <em>what made it pretty?</em> Collect the answers on the board —
+     they will almost all turn out to be about <strong>which frequencies</strong>
+     (today's subject) and <strong>when they change</strong> (Thursday's).</p>
+
+  <h2>10:30 — From One String to Twelve Notes</h2>
+  <p>Yesterday's spectrum demo showed that a single note is a stack of harmonics:
+     a fundamental <em>f</em>, plus 2f, 3f, 4f, 5f… That physical fact is the seed of
+     all Western harmony:</p>
+  <table>
+    <tr><th>Ratio</th><th>Interval</th><th>Where it comes from</th></tr>
+    <tr><td class="mono">2 : 1</td><td>octave</td><td>2nd harmonic — so alike we give both notes the same name</td></tr>
+    <tr><td class="mono">3 : 2</td><td>perfect fifth</td><td>3rd harmonic (folded down an octave)</td></tr>
+    <tr><td class="mono">4 : 3</td><td>perfect fourth</td><td>octave minus fifth</td></tr>
+    <tr><td class="mono">5 : 4</td><td>major third</td><td>5th harmonic (folded down two octaves)</td></tr>
+  </table>
+  <div class="demo">
+    <span class="label">Hear the series</span>
+    <p>Each button plays a pure sine at a multiple of 110 Hz. Play 1× then 2× —
+       hear "the same note, higher." Then hold combinations in your ear: 2× with 3×
+       is a fifth; 4× with 5× is a major third. Harmony is audible arithmetic.</p>
+    <div class="pads" id="harm"></div>
+  </div>
+  <p><strong>The problem:</strong> build a scale from pure ratios and the math never
+     closes — twelve perfect fifths overshoot seven octaves by a small, audible gap
+     (the <em>Pythagorean comma</em>). Every tuning system in history is a different
+     answer to "where do we hide the gap?"</p>
+  <p><strong>The Western answer (c. 1700s, universal by the 1800s):</strong> smear it
+     equally. Divide the octave into <strong>twelve exactly equal steps</strong>, each
+     multiplying frequency by 2<sup>1/12</sup> ≈ 1.0595. Now no interval except the
+     octave is perfectly pure — the fifth lands at 1.4983 instead of 1.5 — but every
+     key is equally usable, and any instrument can play with any other.
+     <strong>Equal temperament is a lossy compression codec for harmony</strong>: a
+     little purity traded for total interoperability. (Tomorrow we meet a tradition
+     that refused the trade.)</p>
+  <div class="demo">
+    <span class="label">The twelve steps</span>
+    <p>One octave from A (220 Hz) to A (440 Hz). Every neighbouring pair has the
+       identical ratio 2<sup>1/12</sup>. The white-named buttons are A major's seven;
+       hear how the twelve-step grid contains the scale.</p>
+    <div class="pads" id="et"></div>
+    <p class="dim" id="etReadout" style="font-family:var(--mono);font-size:13px;margin:0">—</p>
+  </div>
+  <p>Scales are <strong>subsets</strong> of the twelve: major picks steps
+     <span class="mono">0 2 4 5 7 9 11</span>, natural minor picks
+     <span class="mono">0 2 3 5 7 8 10</span>. Chords are subsets of scales
+     (1st, 3rd, 5th degrees). Cadence — tension, then home — is the syntax that makes
+     a chord progression feel like a sentence. That is the whole apparatus:
+     <em>ratios → grid → subsets → syntax.</em></p>
+
+  <h2>12:00 — A History in Forty Minutes</h2>
+  <ul class="listen">
+    <li><span class="who">c. 900</span> Gregorian chant — one line, no harmony
+        <span class="why">Music as a single voice in time. Notation is being invented to preserve it — melody becomes data.</span></li>
+    <li><span class="who">c. 1200</span> Pérotin — early polyphony
+        <span class="why">Two, three, four simultaneous lines: now the ratios between voices matter. Harmony begins.</span></li>
+    <li><span class="who">1722</span> Bach — Well-Tempered Clavier, Prelude in C
+        <span class="why">A manifesto for tempered tuning: one book, all 24 keys, one keyboard. The grid wins.</span></li>
+    <li><span class="who">1808</span> Beethoven — Symphony No. 5, opening
+        <span class="why">Four notes as a building block, developed for half an hour. Pitch architecture at maximum scale.</span></li>
+    <li><span class="who">1976</span> Philip Glass — Einstein on the Beach (excerpt)
+        <span class="why">Process music: simple material + a rule, repeated. Composition already halfway to code.</span></li>
+  </ul>
+  <p>Why this tradition exports so well to machines: it spent eight centuries making
+     itself <strong>discrete</strong>. Notation quantized pitch to symbols; equal
+     temperament quantized tuning to one formula; the metronome quantized time.
+     By 1983, MIDI could reduce "play middle C" to the number 60 — because the
+     reduction had already been done on paper.</p>
+
+  <h2>14:00 — The Formula</h2>
+  <p>Everything above compresses into one line of JavaScript:</p>
+<pre><code>function freqOf(n) {                  // n semitones above A4
+  return 440 * Math.pow(2, n / 12);   // 440 × 2^(n/12)
+}
+
+// freqOf(0)  → 440      A4
+// freqOf(12) → 880      A5, one octave up
+// freqOf(3)  → 523.25   C5
+// freqOf(-9) → 261.63   C4, middle C</code></pre>
+  <p>And a scale is an array of steps applied from a root:</p>
+<pre><code>let root  = -9;                        // middle C, as semitones from A4
+let major = [0, 2, 4, 5, 7, 9, 11];    // the major-scale subset
+
+// the C major scale, computed rather than memorized:
+for (let i = 0; i < major.length; i++) {
+  print( freqOf(root + major[i]) );
+}</code></pre>
+  <p>Sit with what just happened: <em>500 years of European music theory became two
+     arrays and one formula.</em> Swap the array, get minor. Add 7 to the root,
+     you've transposed to G. This is why the machines took to it so readily.</p>
+
+  <h2>15:00 — Tone.js and the Generative Melody</h2>
+  <p><a href="https://tonejs.github.io">Tone.js</a> is a framework over the browser's
+     audio engine: ready-made synths, a musical clock, effects. To use it in the
+     p5 editor: open the sketch's <span class="mono">index.html</span> (left panel ▸)
+     and <strong>replace the p5.sound script line</strong> with:</p>
+<pre><code>&lt;script src="https://unpkg.com/tone@14.7.77/build/Tone.js"&gt;&lt;/script&gt;</code></pre>
+  <div class="callout">
+    <span class="label">One audio library per sketch</span>
+    <p style="margin-bottom:0">p5.sound (Days 1–2) and Tone.js (today onward)
+       <strong>conflict if loaded together</strong> — a sketch uses one or the
+       other, never both. From today, new sound sketches are Tone sketches: swap
+       the script line, and unlock audio with <code>Tone.start()</code> instead of
+       <code>userStartAudio()</code>. p5 itself stays — it still draws every pixel
+       and reads every touch.</p>
+  </div>
+  <p>First sound — a synth object (Day 2: objects take messages):</p>
+<pre><code>let synth;
+
+function setup() {
+  createCanvas(400, 400);
+  synth = new Tone.Synth().toDestination();  // build it, wire it to speakers
+}
+
+function mousePressed() {
+  Tone.start();                              // audio unlock, once
+  synth.triggerAttackRelease("C4", "8n");    // note name, eighth-note long
+}</code></pre>
+  <p>Tone speaks both note names (<code>"C4"</code>) and raw hertz — so our
+     <code>freqOf()</code> plugs straight in. Now the piece that composes itself:</p>
+<pre><code>let synth;
+let major = [0, 2, 4, 5, 7, 9, 11];
+let root  = -9;                                  // C major
+let degree = 0;                                  // where the melody stands
+
+function freqOf(n) { return 440 * Math.pow(2, n / 12); }
+
+function setup() {
+  createCanvas(400, 400);
+  synth = new Tone.Synth().toDestination();
+}
+
+function mousePressed() {
+  Tone.start();
+  Tone.Transport.bpm.value = 96;                 // the clock's tempo
+
+  new Tone.Loop((time) =&gt; {
+    // random walk: melodies move mostly by step, occasionally leap
+    let move = random([-1, -1, 1, 1, 1, -2, 2, 4]);
+    degree = constrain(degree + move, 0, 13);    // two octaves of room
+
+    let oct  = floor(degree / 7) * 12;           // which octave of the scale
+    let step = major[degree % 7];                // which scale member
+    synth.triggerAttackRelease(freqOf(root + oct + step), "8n", time);
+  }, "8n").start(0);                             // run every eighth note
+
+  Tone.Transport.start();
+}</code></pre>
+  <p>Listen first. Then experiment, one change at a time:</p>
+  <ul class="disc">
+    <li>Uniform randomness vs the walk: replace the walk with
+        <code>degree = floor(random(14))</code> — hear how it stops sounding like a
+        melody. <strong>Constraint is what makes randomness musical.</strong></li>
+    <li>Swap in natural minor <span class="mono">[0,2,3,5,7,8,10]</span>. Same code,
+        different weather.</li>
+    <li>Rests: <code>if (random() &lt; 0.2) return;</code> at the top of the loop.
+        Silence is a note.</li>
+    <li>Rhythm: change the loop interval to <code>"16n"</code>, or trigger with
+        duration <code>random(["8n","4n","2n"])</code>.</li>
+  </ul>
+
+  <div class="hw">
+    <span class="label">Assignment A1, part 1 — due Friday 10:00</span>
+    <p style="margin-bottom:0"><strong>A generative melody study in a Western
+       scale.</strong> Start from today's random walk and make it yours: choose scale,
+       tempo, rhythm, rests, register, maybe a second voice. Save the sketch with a
+       finish timestamp. Tomorrow the same sketch learns a raga — part 2 — and Friday
+       morning we hear both versions of each.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-2/"><span class="plabel">Day 2</span>← A Crash Course in JavaScript</a>
+    <a class="next" href="../day-4/"><span class="plabel">Day 4</span>Pitch as Ornament, Time as Cycle →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+<script>
+(function(){
+  var ctx=null;
+  function ping(freq){
+    ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+    var o=ctx.createOscillator(), g=ctx.createGain();
+    o.frequency.value=freq; o.type="sine";
+    g.gain.setValueAtTime(0.0001,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.28,ctx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+1.4);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime+1.5);
+  }
+  // harmonic series pads: multiples of 110 Hz
+  var harm=document.getElementById("harm");
+  for(var m=1;m<=8;m++){(function(m){
+    var b=document.createElement("button");
+    b.textContent=m+"× "+(110*m)+" Hz";
+    b.addEventListener("click",function(){ping(110*m);});
+    harm.appendChild(b);
+  })(m);}
+  // equal temperament pads: A3 220 → A4 440
+  var names=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#","A"];
+  var inAMajor=[0,2,4,5,7,9,11,12];   // steps of A major within the octave
+  var et=document.getElementById("et"), out=document.getElementById("etReadout");
+  for(var n=0;n<=12;n++){(function(n){
+    var f=220*Math.pow(2,n/12);
+    var b=document.createElement("button");
+    b.textContent=names[n];
+    if(inAMajor.indexOf(n)<0){b.style.background="#efece4";b.style.color="#6f6a5e";}
+    b.addEventListener("click",function(){
+      ping(f);
+      out.textContent="step "+n+" · 220 × 2^("+n+"/12) = "+f.toFixed(2)+" Hz";
+    });
+    et.appendChild(b);
+  })(n);}
+})();
+</script>
+</body>
+</html>

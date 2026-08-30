@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 5 — Timbre as Material · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 5 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 5 · Friday 4 September 2026 · RTA 307</div>
+  <h1>Timbre as Material</h1>
+  <p class="lede">The third answer. Electronic music's move: stop asking which notes —
+     ask <em>what the sound itself is made of</em>. Synthesis, sampling, and
+     sequencing in Tone.js, then the week ends as it should: a jam.</p>
+  <div class="sched">
+    <span><b>10:00</b> A1 listening — six pairs</span>
+    <span><b>11:00</b> a lineage in five records</span>
+    <span><b>12:00</b> how synthesis works</span>
+    <span><b>14:00</b> Tone.js deep dive</span>
+    <span><b>16:00</b> the Friday jam (A2)</span>
+    <span><b>17:00</b> final brief + weekend</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>tell subtractive from FM synthesis, by ear and in code</li>
+      <li>play recorded samples as an instrument with Tone.Sampler</li>
+      <li>chain effects and program a 16-step sequencer</li>
+      <li>perform sixty seconds of music you built from nothing this week</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — A1 Listening</h2>
+  <p>Six pairs: each Western-scale study, then its raga twin, back to back,
+     timestamps declared. One question per pair for the room: <em>what did the
+     constraint change?</em> Note the answers — they are your first instrument-design
+     findings, and they come back in Week 2.</p>
+
+  <h2>11:00 — A Lineage in Five Records</h2>
+  <ul class="listen">
+    <li><span class="who">1948 · Paris</span> Pierre Schaeffer — Étude aux chemins de fer
+        <span class="why">Musique concrète: recorded trains, cut and looped into form. The recording stops being a document and becomes an instrument — sampling begins here.</span></li>
+    <li><span class="who">1963 · London</span> Delia Derbyshire — the Doctor Who theme
+        <span class="why">Assembled sine by sine on tape, no synthesizer yet in the building. Heroic sound-construction; every timbre a decision.</span></li>
+    <li><span class="who">1977 · Düsseldorf</span> Kraftwerk — Trans-Europe Express
+        <span class="why">The sequencer becomes the performer. Repetition as aesthetic, machine time as groove.</span></li>
+    <li><span class="who">1982 · Mumbai</span> Charanjit Singh — Synthesizing: Ten Ragas to a Disco Beat
+        <span class="why">Yesterday meets today: ragas on a Roland 303/808, years before acid house "invented" that sound. The traditions in this workshop have already met.</span></li>
+    <li><span class="who">1999 · Cornwall</span> Aphex Twin — Windowlicker
+        <span class="why">The DAW era: timbre, rhythm, and pitch all equally plastic. Production is composition.</span></li>
+  </ul>
+  <p>The through-line: each generation turned some piece of studio machinery into an
+     instrument. Tape, then oscillators, then sequencers, then software. You are the
+     next step in that lineage: <strong>the browser is your studio</strong>, and next
+     week, the phone is your stage.</p>
+
+  <h2>12:00 — How Synthesis Works</h2>
+  <p>Two recipes cover most synthesized sound you have ever heard:</p>
+  <table>
+    <tr><th>Recipe</th><th>Idea</th><th>Character</th></tr>
+    <tr><td><strong>Subtractive</strong></td>
+        <td>start rich (saw/square, full of harmonics — Day 1's spectrum), then
+            <em>carve away</em> with a filter; shape loudness with an envelope</td>
+        <td>warm, vocal, "analog" — basses, pads, leads</td></tr>
+    <tr><td><strong>FM</strong></td>
+        <td>wiggle one oscillator's frequency <em>with another oscillator</em>,
+            at audio rate; sidebands bloom into complex spectra</td>
+        <td>glassy, metallic, bells, electric pianos — timbres subtraction can't reach</td></tr>
+  </table>
+  <p>Four envelope numbers — <strong>ADSR</strong>: attack, decay, sustain, release —
+     decide whether the same oscillator reads as a pluck (instant attack, fast
+     decay), a pad (slow attack, long release), or a stab. Timbre is spectrum
+     <em>plus</em> its motion in time.</p>
+  <div class="demo">
+    <span class="label">Live demo — two knobs of FM</span>
+    <p>One sine modulating another. <em>Ratio</em> sets which sidebands appear
+       (integer ratios = harmonic, in-between = clangorous); <em>depth</em> sets how
+       many. Two numbers, a whole timbre-space.</p>
+    <button class="big" id="fmgo">▶ start</button>
+    <div class="ctl"><span>ratio</span>
+      <input type="range" id="fmr" min="0.5" max="8" value="2" step="0.01">
+      <output id="fmrOut">2.00</output></div>
+    <div class="ctl"><span>depth</span>
+      <input type="range" id="fmd" min="0" max="800" value="150" step="1">
+      <output id="fmdOut">150 Hz</output></div>
+  </div>
+
+  <h2>14:00 — Tone.js Deep Dive</h2>
+  <h3>1 · The synth family</h3>
+  <p>Same interface, different engines — swap one line, audition them all:</p>
+<pre><code>let synth = new Tone.Synth().toDestination();        // plain subtractive voice
+// new Tone.FMSynth()       — the two-knob demo, as an instrument
+// new Tone.AMSynth()       — tremulant cousin
+// new Tone.DuoSynth()      — two detuned voices, thick
+// new Tone.MembraneSynth() — drums/toms (yesterday's tabla stand-in)
+// new Tone.NoiseSynth()    — hats, snares, wind
+
+function mousePressed() {
+  Tone.start();
+  synth.triggerAttackRelease("C3", "4n");
+}</code></pre>
+  <p>Open any synth's envelope:
+     <code>new Tone.Synth({ envelope: { attack: 1.5, release: 3 } })</code> —
+     the pluck becomes a pad. ADSR is now yours in code.</p>
+
+  <h3>2 · Sampling — recorded sound as an instrument</h3>
+  <p>This workshop's own sample library: an acoustic guitar, chromatic G3–B5, one
+     file per note, recorded for a previous edition of this unit. Tone.Sampler
+     repitches the nearest sample for any note you ask for:</p>
+<pre><code>let ready = false;
+const sampler = new Tone.Sampler({
+  urls: {
+    "G3": "g3_Pick1.mp3",  "C4": "c4_Pick1.mp3",
+    "E4": "e4_Pick1.mp3",  "G4": "g4_Pick1.mp3",
+    "C5": "c5_Pick1.mp3",  "E5": "e5_Pick1.mp3",
+    "G5": "g5_Pick1.mp3"
+  },
+  baseUrl: "https://workshops.ujjwalagarwal.com/computational-approach-to-sound/assets/strings/",
+  onload: () =&gt; { ready = true; }
+}).toDestination();
+
+function mousePressed() {
+  Tone.start();
+  if (ready) sampler.triggerAttackRelease(["C4", "E4", "G4"], "2n");  // a chord!
+}</code></pre>
+  <p class="dim">The full chromatic set (30 notes, <span class="mono">a3_Pick1.mp3
+     … b5_Pick1.mp3</span>, sharps as <span class="mono">as4, cs5…</span>) lives at
+     <a href="../assets/strings/">assets/strings/</a>. And Schaeffer's move is open
+     to you: record <em>anything</em> on your phone, upload it to the p5 editor as a
+     file, and give the sampler that instead. A door slam played chromatically is a
+     legitimate instrument.</p>
+
+  <h3>3 · Effects — the studio as signal chain</h3>
+<pre><code>const dist   = new Tone.Distortion(0.4);
+const delay  = new Tone.FeedbackDelay("8n.", 0.35);   // dotted-eighth echo
+const reverb = new Tone.Reverb(4);
+
+synth.chain(dist, delay, reverb, Tone.Destination);   // in that order</code></pre>
+  <p>Order matters — distortion into reverb is a guitar amp in a hall; reverb into
+     distortion is a broken radio. Try both. There is no wrong, only signature.</p>
+
+  <h3>4 · The step sequencer — the chairs, electrified</h3>
+<pre><code>const kick = new Tone.MembraneSynth().toDestination();
+const hat  = new Tone.NoiseSynth({ volume: -12,
+               envelope: { attack: 0.001, decay: 0.05, sustain: 0 }
+             }).toDestination();
+
+const kickRow = [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,1];
+const hatRow  = [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,1];
+
+let step = 0;
+function mousePressed() {
+  Tone.start();
+  Tone.Transport.bpm.value = 118;
+  new Tone.Loop((time) =&gt; {
+    if (kickRow[step]) kick.triggerAttackRelease("C1", "8n", time);
+    if (hatRow[step])  hat.triggerAttackRelease("16n", time);
+    step = (step + 1) % 16;                       // the wheel, again
+  }, "16n").start(0);
+  Tone.Transport.start();
+}</code></pre>
+  <p>Add a third row driving yesterday's raga synth, or Monday's five keys, or the
+     sampler. Layer until it grooves. This sketch — rows as arrays, a wheel of
+     sixteen — is the floor plan of every drum machine since 1980.</p>
+
+  <h2>16:00 — The Friday Jam (Assignment A2)</h2>
+  <div class="callout">
+    <span class="label">A2 · performed today</span>
+    <p style="margin-bottom:0"><strong>Sixty seconds, live, through the monitors.</strong>
+       Any instrument or system built this week — the five keys grown up, a generative
+       piece you conduct with the mouse, a beat you mute and unmute. Sixty seconds is
+       long. Plan a shape: begin somewhere, go somewhere, end on purpose. Running
+       order by lot at 15:45; performance timestamps logged, truly, in the record.</p>
+  </div>
+
+  <h2>17:00 — The Final Project Brief</h2>
+  <div class="callout">
+    <span class="label">A3 · announced now, built next week</span>
+    <p><strong>Build a musical instrument that lives on a phone.</strong> A URL that
+       turns a phone — yours, or anyone's — into something playable: touch,
+       tilt, shake, listening, or self-playing. Solo, pair, or one band of six;
+       decided at Tuesday's concept lock.</p>
+    <p>It must: run on a real phone from a live URL · be playable by a stranger
+       within 30 seconds · be performed at Friday's showcase · ship with
+       documentation (short video + one page, every fact timestamped, per the house
+       rule).</p>
+    <p style="margin-bottom:0"><strong>Weekend homework:</strong> play with
+       <a href="https://raga.fm">raga.fm</a> on your own phone and one other browser
+       instrument you find in the wild. For each, note one mapping you admire and one
+       you'd change. Bring three instrument ideas on Monday — sketches on paper, not
+       code.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-4/"><span class="plabel">Day 4</span>← Pitch as Ornament, Time as Cycle</a>
+    <a class="next" href="../day-6/"><span class="plabel">Day 6</span>The Screen as a Control Surface →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+<script>
+(function(){
+  var ctx,car,mod,mg,g,run=false;
+  var btn=document.getElementById("fmgo");
+  var r=document.getElementById("fmr"),rOut=document.getElementById("fmrOut");
+  var d=document.getElementById("fmd"),dOut=document.getElementById("fmdOut");
+  btn.addEventListener("click",function(){
+    if(run){car.stop();mod.stop();ctx.close();run=false;btn.textContent="▶ start";return;}
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    car=ctx.createOscillator(); mod=ctx.createOscillator();
+    mg=ctx.createGain(); g=ctx.createGain();
+    car.frequency.value=220;
+    mod.frequency.value=220*(+r.value);
+    mg.gain.value=+d.value;
+    g.gain.value=0.15;
+    mod.connect(mg); mg.connect(car.frequency);
+    car.connect(g); g.connect(ctx.destination);
+    mod.start(); car.start(); run=true; btn.textContent="■ stop";
+  });
+  r.addEventListener("input",function(){rOut.textContent=(+r.value).toFixed(2);
+    if(run) mod.frequency.setTargetAtTime(220*(+r.value),ctx.currentTime,0.02);});
+  d.addEventListener("input",function(){dOut.textContent=d.value+" Hz";
+    if(run) mg.gain.setTargetAtTime(+d.value,ctx.currentTime,0.02);});
+})();
+</script>
+</body>
+</html>

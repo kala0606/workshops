@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Pocket Theremin · CAS 2026</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:#16140f;
+    font-family:ui-monospace,Menlo,Consolas,monospace;
+    -webkit-user-select:none;user-select:none;touch-action:none}
+  canvas{display:block;position:fixed;inset:0}
+  #hud{position:fixed;left:0;right:0;top:calc(14px + env(safe-area-inset-top));
+    text-align:center;color:#8a8272;font-size:12px;letter-spacing:.15em;
+    pointer-events:none;text-transform:uppercase}
+  #start{position:fixed;inset:0;display:flex;flex-direction:column;gap:14px;
+    align-items:center;justify-content:center;background:#16140f;color:#e8e3d6;z-index:2}
+  #start button{font:inherit;font-size:15px;letter-spacing:.1em;background:#c2410c;
+    color:#fff;border:0;border-radius:8px;padding:16px 34px}
+  #start p{color:#8a8272;font-size:12px;max-width:30em;text-align:center;
+    line-height:1.7;padding:0 20px}
+</style>
+</head>
+<body>
+<div id="start">
+  <button id="go">▶ &nbsp;START</button>
+  <p>Touch and drag anywhere.<br>left–right = pitch · up–down = brightness<br>
+     Pocket Theremin · Computational Approaches to Sound · CAS 2026</p>
+</div>
+<div id="hud">— Hz</div>
+<canvas id="c"></canvas>
+<script>
+/* Pocket Theremin — reference build for Day 6.
+   Vanilla Web Audio, no libraries: a sawtooth through a lowpass filter.
+   x = pitch (80–880 Hz) · y = filter cutoff (200–4000 Hz). */
+(function(){
+  var cv=document.getElementById("c"), g=cv.getContext("2d");
+  var hud=document.getElementById("hud");
+  var ctx=null, osc=null, filt=null, amp=null;
+  var px=-1, py=-1, on=false;
+
+  function fit(){cv.width=innerWidth*devicePixelRatio;
+    cv.height=innerHeight*devicePixelRatio;}
+  addEventListener("resize",fit); fit();
+
+  document.getElementById("go").addEventListener("click",function(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    osc=ctx.createOscillator(); filt=ctx.createBiquadFilter(); amp=ctx.createGain();
+    osc.type="sawtooth"; filt.type="lowpass"; filt.Q.value=6;
+    amp.gain.value=0;
+    osc.connect(filt); filt.connect(amp); amp.connect(ctx.destination);
+    osc.start();
+    document.getElementById("start").style.display="none";
+  });
+
+  function setFrom(x,y){
+    px=x; py=y;
+    var W=Math.max(innerWidth,1), H=Math.max(innerHeight,1);
+    var f=80*Math.pow(880/80, Math.min(Math.max(x/W,0),1));   // exponential: musical
+    var c=200*Math.pow(4000/200, 1-Math.min(Math.max(y/H,0),1));
+    osc.frequency.setTargetAtTime(f,ctx.currentTime,0.02);
+    filt.frequency.setTargetAtTime(c,ctx.currentTime,0.02);
+    hud.textContent=f.toFixed(0)+" Hz · cutoff "+c.toFixed(0)+" Hz";
+  }
+  function down(x,y){ if(!ctx) return; on=true;
+    amp.gain.setTargetAtTime(0.35,ctx.currentTime,0.03); setFrom(x,y); }
+  function up(){ if(!ctx) return; on=false;
+    amp.gain.setTargetAtTime(0,ctx.currentTime,0.08); }
+
+  addEventListener("pointerdown",function(e){down(e.clientX,e.clientY);});
+  addEventListener("pointermove",function(e){if(on) setFrom(e.clientX,e.clientY);});
+  addEventListener("pointerup",up);
+  addEventListener("pointercancel",up);
+
+  (function draw(){
+    requestAnimationFrame(draw);
+    var w=cv.width,h=cv.height,d=devicePixelRatio;
+    g.fillStyle="#16140f"; g.fillRect(0,0,w,h);
+    if(px>=0){
+      g.strokeStyle=on?"#c2410c":"#3a362c"; g.lineWidth=3*d;
+      g.beginPath(); g.moveTo(px*d,0); g.lineTo(px*d,h); g.stroke();
+      g.beginPath(); g.moveTo(0,py*d); g.lineTo(w,py*d); g.stroke();
+      g.fillStyle=on?"#e8e3d6":"#3a362c";
+      g.beginPath(); g.arc(px*d,py*d,(on?26:14)*d,0,7); g.fill();
+    }
+  })();
+})();
+</script>
+</body>
+</html>

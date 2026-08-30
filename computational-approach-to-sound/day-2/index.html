@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 — A Crash Course in JavaScript · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 2 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 2 · Tuesday 1 September 2026 · RTA 307</div>
+  <h1>A Crash Course in JavaScript</h1>
+  <p class="lede">Variables, functions, conditionals, loops, arrays, events — the
+     entire vocabulary of this workshop, learned in one day, with no abstract
+     exercises. Every concept is a sketch you can hear or see.</p>
+  <div class="sched">
+    <span><b>10:00</b> homework listening</span>
+    <span><b>10:45</b> variables → loops</span>
+    <span><b>14:00</b> arrays &amp; events</span>
+    <span><b>15:30</b> keyboard instrument</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>read and write a p5.js sketch: variables, functions, if/else, for-loops, arrays</li>
+      <li>respond to mouse and keyboard events in code</li>
+      <li>explain what an object is well enough to use any library</li>
+      <li>play a five-note instrument you typed yourself</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — Homework Listening</h2>
+  <p>Six field recordings, phone to the sound card, monitors up. Each of you states
+     the where and the when-to-the-minute before pressing play (house rule), then one
+     sentence: what makes it <em>almost</em> music? Which side of yesterday's axis
+     does the room place it on?</p>
+
+  <h2>10:45 — The Language, One Sketch at a Time</h2>
+  <p>Rules of the game today: type everything yourself (no pasting until after lunch),
+     run after every change, and when something breaks, read the error message out
+     loud — it is trying to help. All sketches live in your
+     <a href="https://editor.p5js.org">p5.js editor</a> account.</p>
+
+  <h3>1 · Variables — a name for a value</h3>
+<pre><code>let x = 50;          // make a box called x, put 50 in it
+
+function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(240);
+  circle(x, 200, 80);  // use whatever is in the box
+  x = x + 1;           // change the box — the circle drifts right
+}</code></pre>
+  <p><code>draw()</code> runs about sixty times a second — it is yesterday's walk
+     along the chairs, and <code>x</code> is the state that carries over between
+     passes. Try <code>x = x + 5</code>. Try <code>x = x - 1</code>.</p>
+
+  <h3>2 · Types — three kinds of value, for now</h3>
+  <table>
+    <tr><th>Type</th><th>Looks like</th><th>Used for</th></tr>
+    <tr><td>number</td><td class="mono">440, 0.5, -3</td><td>positions, frequencies, volumes</td></tr>
+    <tr><td>string</td><td class="mono">"sine", 'hello'</td><td>names, labels, choices</td></tr>
+    <tr><td>boolean</td><td class="mono">true, false</td><td>on/off, yes/no</td></tr>
+  </table>
+
+  <h3>3 · Functions — a named recipe</h3>
+<pre><code>function setup() {
+  createCanvas(400, 400);
+  background(240);
+  eye(150, 200);       // call the recipe...
+  eye(250, 200);       // ...twice. Write once, use many times.
+}
+
+function eye(x, y) {   // x and y are ingredients (parameters)
+  fill(255); circle(x, y, 60);
+  fill(0);   circle(x, y, 25);
+}</code></pre>
+  <p>You have been <em>calling</em> functions since yesterday — <code>circle()</code>,
+     <code>map()</code>, <code>osc.freq()</code>. Now you can also make your own.</p>
+
+  <h3>4 · If / else — code that decides</h3>
+<pre><code>let x = 0;
+let speed = 3;
+
+function setup() { createCanvas(400, 400); }
+
+function draw() {
+  background(240);
+  circle(x, 200, 80);
+  x = x + speed;
+  if (x > width || x < 0) {   // hit an edge?
+    speed = -speed;           // reverse direction
+  }
+}</code></pre>
+
+  <h3>5 · Loops — do it n times</h3>
+<pre><code>function setup() {
+  createCanvas(400, 400);
+  background(240);
+  for (let i = 0; i < 10; i = i + 1) {
+    circle(40 * i + 20, 200, 30);   // ten circles, one line of intent
+  }
+}</code></pre>
+  <p>Read it as: <em>start i at 0; while i is below 10, do the body, then add 1</em>.
+     Change <code>10</code>, change <code>40</code>, put <code>i</code> into the
+     size — get a feel for the machinery.</p>
+
+  <h3>6 · Arrays — a numbered shelf of values</h3>
+<pre><code>let notes = [220, 247, 262, 294, 330];   // five frequencies on a shelf
+
+function setup() {
+  createCanvas(400, 400);
+  print( notes[0] );        // 220 — shelves count from zero
+  print( notes[4] );        // 330
+  print( notes.length );    // 5
+}</code></pre>
+  <p>Arrays + loops is the pair that runs all music software: a melody is an array
+     of pitches, a rhythm is an array of durations, yesterday's human sequencer was
+     an array of cards. Sixty percent of Week 2 is deciding what goes in your
+     arrays.</p>
+
+  <h2>14:00 — Events, Objects, and the First Instrument</h2>
+
+  <h3>7 · Events — code that waits for you</h3>
+<pre><code>function setup() { createCanvas(400, 400); background(240); }
+
+function draw() {}
+
+function mousePressed() {
+  circle(mouseX, mouseY, 40);
+}
+
+function keyPressed() {
+  background(random(255), random(255), random(255));
+}</code></pre>
+  <p><code>setup</code> runs once, <code>draw</code> runs always,
+     <code>mousePressed</code> / <code>keyPressed</code> run <em>when something
+     happens</em>. Instruments live in that third kind: they wait, then respond.</p>
+
+  <h3>8 · Objects — just enough to use libraries</h3>
+  <p>An object is a value that carries its own functions.
+     <code>osc = new p5.Oscillator('sine')</code> builds one; after that,
+     <code>osc.freq(440)</code>, <code>osc.amp(0.3)</code>, <code>osc.start()</code>
+     are messages you send it. The dot means "ask this thing to do something."
+     That is all the object theory this workshop needs — libraries hand you
+     well-made objects; you send them messages.</p>
+
+  <h3>9 · Build: the five-key instrument</h3>
+<pre><code>let osc;
+let notes = [220, 247, 262, 294, 330];   // A B C D E
+let keys  = ['a', 's', 'd', 'f', 'g'];
+
+function setup() {
+  createCanvas(400, 400);
+  osc = new p5.Oscillator('triangle');
+  textAlign(CENTER, CENTER); textSize(28);
+}
+
+function draw() {
+  background(24);
+  fill(230);
+  text('a  s  d  f  g', width / 2, height / 2);
+}
+
+function keyPressed() {
+  for (let i = 0; i < keys.length; i = i + 1) {
+    if (key === keys[i]) {          // which key of ours was it?
+      osc.freq( notes[i] );         // its shelf-mate frequency
+      osc.start();
+      osc.amp(0.4, 0.02);           // fade in fast
+    }
+  }
+}
+
+function keyReleased() {
+  osc.amp(0, 0.3);                  // fade out — no clicks
+}</code></pre>
+  <p>Everything from today is in this sketch: two arrays holding the instrument's
+     definition, a loop searching them, an if deciding, an object being told what to
+     do, events waiting for your hands. <strong>This is an instrument.</strong> A
+     modest one — but tomorrow it learns Western music theory, Thursday it learns a
+     raga, and in Week 2 it moves onto your phone.</p>
+  <p>If you finish early: add more keys; give each key a different waveform; make the
+     background respond to the note; make <code>keyReleased</code> only stop when the
+     released key is the sounding one.</p>
+
+  <h2>Reference — Today on One Screen</h2>
+<pre><code>let x = 5;                 // variable
+let name = "sine";         // string
+let on = true;             // boolean
+function f(a, b) { }       // function with parameters
+if (x > 3) { } else { }    // decision
+for (let i = 0; i < 10; i++) { }   // loop (i++ is short for i = i + 1)
+let arr = [1, 2, 3];       // array; arr[0] is 1; arr.length is 3
+osc.freq(440);             // message to an object
+function mousePressed() {} // event handler</code></pre>
+
+  <div class="hw">
+    <span class="label">Homework — due tomorrow 10:00</span>
+    <p><strong>Two sketches.</strong> Using anything from today:
+       (1) the <strong>ugliest</strong> sound you can program;
+       (2) the <strong>prettiest</strong>. Save both in the editor. Bring the two
+       share-links, each noted with its finish time, to the minute.</p>
+    <p style="margin-bottom:0">Ugly is a real assignment, not a joke: you will learn
+       more about amplitude, frequency, and your own taste from chasing ugly than
+       from anything polite. (Hint: <code>random()</code> inside
+       <code>draw()</code>, tiny <code>osc.freq()</code> values, several oscillators
+       at once…)</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-1/"><span class="plabel">Day 1</span>← When Is Sound Music?</a>
+    <a class="next" href="../day-3/"><span class="plabel">Day 3</span>Pitch as Architecture →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 4 — Pitch as Ornament, Time as Cycle · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Day 4 / 10</span>
+</nav>
+<main>
+  <div class="kicker">Day 4 · Thursday 3 September 2026 · RTA 307</div>
+  <h1>Pitch as Ornament, Time as Cycle</h1>
+  <p class="lede">The Indian classical answer to the same question — and it is a
+     different answer on almost every axis. The note is a curve, not a point. Tuning
+     is relational, not gridded. Time is a wheel, not an arrow. This afternoon,
+     yesterday's melody machine learns a raga.</p>
+  <div class="sched">
+    <span><b>10:00</b> the drone, again</span>
+    <span><b>10:30</b> swara, raga, gamaka</span>
+    <span><b>12:00</b> tala · listening</span>
+    <span><b>14:00</b> code: drone + raga</span>
+    <span><b>15:45</b> code: tala sequencer</span>
+    <span><b>17:00</b> end</span>
+  </div>
+
+  <div class="goals">
+    <span class="label">By the end of today you can</span>
+    <ul>
+      <li>explain raga as more than scale: aroha/avaroha, pakad, gamaka</li>
+      <li>hear the difference between a just and an equal-tempered interval</li>
+      <li>constrain a generative melody to a raga over a coded tanpura drone</li>
+      <li>sequence a 16-beat teentaal cycle as an array of bols</li>
+    </ul>
+  </div>
+
+  <h2>10:00 — The Drone, Again</h2>
+  <p>Day 1's tanpura recording, once more — but now you have three days of vocabulary.
+     The tanpura plays two pitches (sa and pa) forever, yet the sound shimmers and
+     moves. Two reasons, one physical, one systemic:</p>
+  <ul class="disc">
+    <li><strong>Physical:</strong> the bridge (javari) makes each string's harmonics
+        bloom and decay in slow waves — the drone is a spectrum in motion, a fact you
+        can now see on an analyser.</li>
+    <li><strong>Systemic:</strong> the drone is the tuning reference. With sa
+        sounding continuously, every other note is heard <em>as a ratio against
+        it</em> — living just intonation, not a tempered grid. Yesterday's codec
+        compromise was never adopted here, because nothing needed to modulate away
+        from sa.</li>
+  </ul>
+  <div class="demo">
+    <span class="label">Hear the difference the grid makes</span>
+    <p>A major third, two ways, over a sounding root. The just third (ratio exactly
+       5:4) locks into the root — smooth, fused. The equal-tempered third (2<sup>4/12</sup>,
+       about 0.8% sharp of 5:4) beats against it — a slow <em>wah-wah-wah</em>. That
+       beating is the gap Western tuning chose to live with, and Indian tuning did
+       not.</p>
+    <div class="pads">
+      <button id="ji">just third · 5:4</button>
+      <button id="et">equal-tempered third · 2^(4/12)</button>
+      <button id="drone">☉ sa–pa drone on/off</button>
+    </div>
+  </div>
+
+  <h2>10:30 — Swara, Raga, Gamaka</h2>
+  <p><strong>Swara.</strong> Seven syllables — <em>sa re ga ma pa dha ni</em> —
+     name scale positions relative to a movable sa, the way solfège does. Five of
+     them come in altered forms (komal re/ga/dha/ni, tivra ma), giving twelve
+     positions per octave; the older theory hears 22 finer <em>shruti</em> between
+     them. Because sa travels with the singer, notation here is relational by
+     construction — there is no "middle C."</p>
+  <p><strong>Raga is not a scale.</strong> A scale is a set of notes; a raga is a
+     <em>behavioural grammar</em> for melody:</p>
+  <table>
+    <tr><th>Component</th><th>Meaning</th></tr>
+    <tr><td><strong>aroha / avaroha</strong></td>
+        <td>the permitted way up and the permitted way down — often <em>different
+        paths</em>, sometimes zigzag (vakra)</td></tr>
+    <tr><td><strong>pakad</strong></td>
+        <td>the signature phrase — hear it, name the raga</td></tr>
+    <tr><td><strong>vadi / samvadi</strong></td>
+        <td>the most- and second-most-important notes: where melody rests and leans</td></tr>
+    <tr><td><strong>gamaka / meend</strong></td>
+        <td>the mandatory ornaments and slides — <em>how</em> a note is approached
+            and left; in this tradition the curve is part of the note's identity</td></tr>
+    <tr><td><strong>samay, rasa</strong></td>
+        <td>the time of day and the affect a raga carries — theory that binds pitch
+            to life, not just to other pitch</td></tr>
+  </table>
+  <p>Contrast with yesterday in one line: <strong>Western theory specifies
+     <em>which</em> pitches and stacks them; raga specifies <em>how pitch moves</em>
+     and forbids stacking</strong> — no chords, one voice, infinite interior detail.
+     Two masteries, orthogonal.</p>
+
+  <h2>12:00 — Tala, and Listening</h2>
+  <p><strong>Tala is cyclic time.</strong> A fixed number of beats (matra), grouped
+     into sections (vibhag), turning forever. Beat 1 — <strong>sam</strong> — is not
+     a starting line, it is a <em>homecoming</em>: soloist and drummer diverge,
+     orbit, and land on sam together. The cycle most common in Hindustani music,
+     <strong>teentaal</strong>, is 16 = 4+4+4+4, spoken as bols:</p>
+  <p class="mono" style="font-size:14px">dha dhin dhin dha · dha dhin dhin dha ·
+     dha <strong>tin tin ta</strong> · ta dhin dhin dha</p>
+  <p>The third vibhag is <em>khali</em> — "empty," waved not clapped, its bols
+     bass-less — so a listener can feel where the wheel is with eyes closed.
+     Compare: Western common time restarts every bar (a short loop); tala is one
+     long wheel with landmarks. Both are arrays. Different lengths, different
+     meanings.</p>
+  <ul class="listen">
+    <li><span class="who">Hindustani · vocal</span> Bhimsen Joshi — Raga Yaman (khyal)
+        <span class="why">Follow one note bent into dozens of shapes. The ornament is the content.</span></li>
+    <li><span class="who">Carnatic · vocal</span> M.S. Subbulakshmi — Bhaja Govindam
+        <span class="why">The southern grammar: same relational system, its own ornament family and rhythmic science.</span></li>
+    <li><span class="who">Sitar</span> Nikhil Banerjee — Raga Bhupali
+        <span class="why">Meend on strings: pitch as a continuous path between frets. Today's afternoon raga, played properly.</span></li>
+    <li><span class="who">Tabla</span> Zakir Hussain — teentaal solo
+        <span class="why">Count the 16. Find sam. Lose it. Find it again — that's the game.</span></li>
+    <li><span class="who">Generative</span> <a href="https://raga.fm">raga.fm</a>
+        <span class="why">A raga engine in the browser — the facilitator's own project, and proof that this grammar can be computed. Study object for Week 2.</span></li>
+  </ul>
+
+  <h2>14:00 — Code: Drone + Raga</h2>
+  <p>Same Tone.js setup as yesterday. First, a tanpura stand-in — filtered saws on
+     sa and pa, quiet and endless:</p>
+<pre><code>let droneOn = false;
+
+function startDrone() {
+  const filt = new Tone.Filter(900, "lowpass").toDestination();
+  ["C3", "G3", "C4"].forEach((n) =&gt; {          // sa, pa, sa
+    const o = new Tone.Oscillator(n, "sawtooth").connect(filt);
+    o.volume.value = -26;
+    o.start();
+  });
+  droneOn = true;
+}</code></pre>
+  <p>Now the melody machine from Day 3, constrained to <strong>Raga Bhupali</strong>
+     — the pentatonic sa re ga pa dha, same path up and down, the friendliest of
+     ragas. Two changes only, and one of them is philosophical: the pitch arrays are
+     now <strong>ratios against sa</strong>, not semitone steps.</p>
+<pre><code>let synth;
+let sa = 261.63;                                  // sa sits on middle C today
+// Bhupali as just ratios from sa:  sa   re   ga    pa   dha
+let raga    = [1, 9/8, 5/4, 3/2, 5/3];
+let degree  = 0;
+
+function setup() {
+  createCanvas(400, 400);
+  synth = new Tone.Synth({
+    portamento: 0.06,               // meend! the synth slides between notes
+    oscillator: { type: "triangle" }
+  }).toDestination();
+}
+
+function mousePressed() {
+  if (!droneOn) { Tone.start(); startDrone(); }
+  Tone.Transport.bpm.value = 72;
+
+  new Tone.Loop((time) =&gt; {
+    if (random() &lt; 0.18) return;                 // breath
+    let move = random([-1, -1, 1, 1, 1, 2, -2]);
+    degree = constrain(degree + move, 0, 9);      // two octaves of raga
+    let oct   = floor(degree / 5);                // 0 or 1
+    let ratio = raga[degree % 5] * Math.pow(2, oct);
+    synth.triggerAttackRelease(sa * ratio, "8n", time);
+  }, "8n").start(0);
+
+  Tone.Transport.start();
+}</code></pre>
+  <p>With the drone underneath, the just ratios <em>lock</em> — you heard why this
+     morning. Three experiments, in order:</p>
+  <ul class="disc">
+    <li><strong>Feel the drone's power:</strong> comment out
+        <code>startDrone()</code>. Same melody, strangely unmoored. The drone is
+        half the music.</li>
+    <li><strong>Raise the portamento</strong> to 0.15 — more meend. At 0 — Western
+        crispness. One number is carrying an entire aesthetic.</li>
+    <li><strong>Try a raga with different up and down paths.</strong> Keep two
+        arrays and pick by direction of <code>move</code>:
+        aroha <span class="mono">[1, 9/8, 5/4, 45/32, 5/3, 15/8]</span> and
+        avaroha adding pa <span class="mono">3/2</span> — an approximation of
+        Yaman's asymmetry.</li>
+  </ul>
+
+  <h2>15:45 — Code: the Teentaal Sequencer</h2>
+  <p>The cycle as an array — Day 1's chairs, now sixteen of them on a wheel:</p>
+<pre><code>const theka = ["dha","dhin","dhin","dha",
+               "dha","dhin","dhin","dha",
+               "dha","tin","tin","ta",        // khali — hear the bass vanish
+               "ta","dhin","dhin","dha"];
+
+const drum  = new Tone.MembraneSynth().toDestination();  // the bass side
+const click = new Tone.MetalSynth({ volume: -18 }).toDestination();
+
+function mousePressed() {
+  Tone.start();
+  Tone.Transport.bpm.value = 80;
+
+  new Tone.Sequence((time, bol) =&gt; {
+    if (bol === "dha")  {                       // bass + strike
+      drum.triggerAttackRelease("G2", "8n", time);
+      click.triggerAttackRelease("C5", "16n", time);
+    }
+    if (bol === "dhin") drum.triggerAttackRelease("A2", "8n", time);
+    if (bol === "tin")  click.triggerAttackRelease("C5", "16n", time);
+    if (bol === "ta")   click.triggerAttackRelease("E5", "16n", time);
+  }, theka, "8n").start(0);
+
+  Tone.Transport.start();
+}</code></pre>
+  <ul class="disc">
+    <li>Accent sam: check the sequence's step inside the callback and hit beat 1
+        harder (Tone.Sequence hands you <code>time</code>; keep your own counter).</li>
+    <li>Run the theka <em>under this afternoon's raga sketch</em> — same Transport,
+        so they share one clock. You now have drone + melody + cycle: the full
+        Hindustani stack, in ~60 lines.</li>
+    <li>Design your own 7-beat or 10-beat cycle. The array doesn't care; your body
+        will — that's rupak and jhaptal territory.</li>
+  </ul>
+
+  <div class="hw">
+    <span class="label">Assignment A1, part 2 — due tomorrow 10:00</span>
+    <p style="margin-bottom:0"><strong>The same generative sketch, twice.</strong>
+       Finish the pair: your Day 3 Western-scale study and today's raga-constrained
+       version — ideally the identical code with the pitch system swapped, so the
+       comparison is honest. Two share-links, timestamps to the minute. Tomorrow we
+       listen to all six pairs back to back, and the differences will do the
+       theorizing for us.</p>
+  </div>
+
+  <div class="pager">
+    <a href="../day-3/"><span class="plabel">Day 3</span>← Pitch as Architecture</a>
+    <a class="next" href="../day-5/"><span class="plabel">Day 5</span>Timbre as Material →</a>
+  </div>
+</main>
+<script src="../cas.js"></script>
+<script>
+(function(){
+  var ctx=null, droneNodes=null;
+  function ac(){return ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();}
+  function tone(freq,dur,vol){
+    var c=ac(), o=c.createOscillator(), g=c.createGain();
+    o.frequency.value=freq; o.type="sine";
+    g.gain.setValueAtTime(0.0001,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol||0.2,c.currentTime+0.03);
+    g.gain.setValueAtTime(vol||0.2,c.currentTime+dur-0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);
+    o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+dur+0.1);
+  }
+  document.getElementById("ji").addEventListener("click",function(){
+    tone(220,3,0.18); tone(220*5/4,3,0.18);
+  });
+  document.getElementById("et").addEventListener("click",function(){
+    tone(220,3,0.18); tone(220*Math.pow(2,4/12),3,0.18);
+  });
+  document.getElementById("drone").addEventListener("click",function(){
+    var c=ac();
+    if(droneNodes){droneNodes.forEach(function(n){n.stop();}); droneNodes=null; return;}
+    droneNodes=[130.81,196.0,261.63].map(function(f){    // sa pa sa
+      var o=c.createOscillator(), g=c.createGain(), fl=c.createBiquadFilter();
+      fl.type="lowpass"; fl.frequency.value=900;
+      o.type="sawtooth"; o.frequency.value=f; g.gain.value=0.045;
+      o.connect(fl); fl.connect(g); g.connect(c.destination); o.start();
+      return o;
+    });
+  });
+})();
+</script>
+</body>
+</html>
