@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign In · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Sign in</span>
+</nav>
+<main>
+  <div id="out" style="display:none">
+    <div class="kicker">Sign In</div>
+    <h1>Your email is your key.</h1>
+    <p class="lede">No password. If your address is on the workshop list, you're in.
+       Signing in is a recorded fact — timestamped, truly.</p>
+    <div style="max-width:420px;margin-top:26px">
+      <input class="field" id="email" type="email" placeholder="you@learner.manipal.edu"
+             autocomplete="email" spellcheck="false">
+      <div style="display:flex;margin-top:12px">
+        <button class="big" id="go" style="flex:1">sign in</button>
+      </div>
+      <p class="stamp" id="err" style="color:var(--acc);margin-top:12px"></p>
+    </div>
+  </div>
+
+  <div id="in" style="display:none">
+    <div class="kicker">Signed In</div>
+    <h1 id="hello">—</h1>
+    <p class="stamp" id="detail"></p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:26px 0">
+      <button class="big" id="arrive">report arrival →</button>
+      <a class="big" href="../chat/" style="text-decoration:none;display:inline-block">open chat</a>
+    </div>
+    <p class="stamp" id="arrived"></p>
+    <hr>
+    <p class="dim">Arrivals are how attendance is kept in this workshop: one press,
+       one true timestamp, each day you're in the room. Your sign-in stays on this
+       browser; <a href="#" id="bye">sign out</a> if it isn't yours.</p>
+  </div>
+</main>
+<script>
+var API = "https://cas26-api.fly.dev";
+(function () {
+  var token = null, name = null;
+  try {
+    token = localStorage.getItem("cas26-token");
+    name = localStorage.getItem("cas26-name");
+  } catch (e) {}
+
+  function show(id) {
+    document.getElementById("out").style.display = id === "out" ? "" : "none";
+    document.getElementById("in").style.display = id === "in" ? "" : "none";
+  }
+  function signedIn() {
+    document.getElementById("hello").textContent = "Hello, " + name + ".";
+    document.getElementById("detail").textContent =
+      "This browser is signed in. It is " + new Date().toString().slice(0, 24) + ".";
+    show("in");
+  }
+  if (token && name) signedIn(); else show("out");
+
+  document.getElementById("go").addEventListener("click", doLogin);
+  document.getElementById("email").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doLogin();
+  });
+  function doLogin() {
+    var email = document.getElementById("email").value.trim().toLowerCase();
+    if (!email) return;
+    document.getElementById("err").textContent = "";
+    fetch(API + "/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, client_ts: new Date().toISOString() }),
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.token) {
+        token = d.token; name = d.name;
+        try {
+          localStorage.setItem("cas26-token", token);
+          localStorage.setItem("cas26-name", name);
+        } catch (e) {}
+        signedIn();
+      } else {
+        document.getElementById("err").textContent = d.error || "something went wrong";
+      }
+    }).catch(function () {
+      document.getElementById("err").textContent =
+        "could not reach the workshop server — is the internet on?";
+    });
+  }
+
+  document.getElementById("arrive").addEventListener("click", function () {
+    fetch(API + "/api/arrive", {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+                 "Authorization": "Bearer " + token },
+      body: JSON.stringify({ client_ts: new Date().toISOString() }),
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.recorded) {
+        document.getElementById("arrived").textContent =
+          "Arrival recorded, truly, at " + new Date(d.recorded).toString().slice(0, 24) + ".";
+      } else if (d.error === "Sign in first.") {
+        try { localStorage.removeItem("cas26-token"); } catch (e) {}
+        show("out");
+      }
+    }).catch(function () {
+      document.getElementById("arrived").textContent = "could not reach the server.";
+    });
+  });
+
+  document.getElementById("bye").addEventListener("click", function (e) {
+    e.preventDefault();
+    try {
+      localStorage.removeItem("cas26-token");
+      localStorage.removeItem("cas26-name");
+    } catch (er) {}
+    token = null; name = null; show("out");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat · CAS 2026</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<nav class="top">
+  <a href="../">← Computational Approaches to Sound</a>
+  <span class="unit">Chat</span>
+</nav>
+<main>
+  <div class="kicker">The Room, Continued</div>
+  <h1>Chat</h1>
+  <p class="lede">Six students, one facilitator, text and links. Everything here is
+     timestamped, because of course it is.</p>
+  <p class="stamp" id="status">connecting…</p>
+  <ul id="msgs"></ul>
+  <div class="chatrow">
+    <input class="field" id="box" type="text" maxlength="2000"
+           placeholder="say something, or paste a link" autocomplete="off">
+    <button class="big" id="send">send</button>
+  </div>
+</main>
+<script>
+var API = "https://cas26-api.fly.dev";
+(function () {
+  var token = null;
+  try { token = localStorage.getItem("cas26-token"); } catch (e) {}
+  if (!token) { location.href = "../login/"; return; }
+
+  var lastId = 0;
+  var msgs = document.getElementById("msgs");
+  var status = document.getElementById("status");
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function linkify(s) {
+    return s.replace(/(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  }
+  function add(m) {
+    var li = document.createElement("li");
+    li.innerHTML =
+      '<span class="when">' + new Date(m.server_ts).toString().slice(4, 21) + "</span>" +
+      '<span class="who">' + esc(m.name || "?") + "</span>" +
+      '<span class="txt">' + linkify(esc(m.text)) + "</span>";
+    msgs.appendChild(li);
+    lastId = Math.max(lastId, m.id);
+  }
+  function poll() {
+    fetch(API + "/api/chat?after=" + lastId, {
+      headers: { Authorization: "Bearer " + token },
+    }).then(function (r) {
+      if (r.status === 401) { location.href = "../login/"; throw new Error("auth"); }
+      return r.json();
+    }).then(function (d) {
+      status.textContent = "";
+      var atBottom =
+        innerHeight + scrollY >= document.body.offsetHeight - 120;
+      (d.messages || []).forEach(add);
+      if (d.messages && d.messages.length && atBottom)
+        scrollTo(0, document.body.scrollHeight);
+    }).catch(function (e) {
+      if (String(e).indexOf("auth") < 0)
+        status.textContent = "reconnecting…";
+    });
+  }
+  poll();
+  setInterval(poll, 5000);
+
+  function sendMsg() {
+    var box = document.getElementById("box");
+    var text = box.value.trim();
+    if (!text) return;
+    box.value = "";
+    fetch(API + "/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+                 Authorization: "Bearer " + token },
+      body: JSON.stringify({ text: text }),
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.message) { add(d.message); scrollTo(0, document.body.scrollHeight); }
+    });
+  }
+  document.getElementById("send").addEventListener("click", sendMsg);
+  document.getElementById("box").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") sendMsg();
+  });
+})();
+</script>
+</body>
+</html>
